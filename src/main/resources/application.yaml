@@ -1,3 +1,10 @@
 spring:
   application:
     name: cars
+  flyway:
+    enabled: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/cars
+    username: user
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver

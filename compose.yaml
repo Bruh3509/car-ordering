@@ -16,15 +16,11 @@ services:
 
   flyway:
     image: flyway/flyway
+    command: -url=jdbc:mysql://mysql:3306/cars?allowPublicKeyRetrieval=true -user=user -password=1234 -locations=filesystem:/flyway/sql migrate
+    volumes:
+      - ./flyway/sql:/flyway/sql
     depends_on:
       - mysql
-    command:
-      - --url=jdbc:mysql//mysql:3306/cars
-      - --username=root
-      - --password=qwerty
-      - --connectRetries=60
-      - migrate
-    volumes:
-      - ./migrations:/flyway/sql
+
 volumes:
   mysql: { }
