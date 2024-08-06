@@ -1,0 +1,26 @@
+services:
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'cars'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: '1234'
+      MYSQL_ROOT_PASSWORD: 'qwerty'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - mysql:/var/lib/mysql
+
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:mysql://mysql:3306/cars?allowPublicKeyRetrieval=true -user=user -password=1234 -locations=filesystem:/flyway/sql migrate
+    volumes:
+      - ./flyway/sql:/flyway/sql
+    depends_on:
+      - mysql
+
+volumes:
+  mysql: { }
