@@ -1,53 +1,40 @@
 package com.demo.cars.database.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "_user")
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-    private String firstname;
-    private String lastname;
+    String firstname;
+    String lastname;
 
     @Column(unique = true)
-    private String email;
+    String email;
 
     @Column(name = "phone_number", unique = true)
-    private String phoneNumber;
+    String phoneNumber;
 
     @Column(name = "creation_date")
-    private Timestamp creationDate;
+    Timestamp creationDate;
 
     @Column(name = "passport_id", unique = true)
-    private String passportId;
+    String passportId;
 
     @Column(name = "driving_license_id", unique = true)
-    private String drivingLicenseId;
-
-    public User() {
-    }
-
-    public User(String firstname,
-                String lastname,
-                String email,
-                String phoneNumber,
-                Timestamp creationDate,
-                String passportId,
-                String drivingLicenseId
-    ) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.creationDate = creationDate;
-        this.passportId = passportId;
-        this.drivingLicenseId = drivingLicenseId;
-    }
+    String drivingLicenseId;
 }
