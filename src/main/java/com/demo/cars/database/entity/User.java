@@ -26,15 +26,14 @@ public class User {
     @Column(unique = true)
     String email;
 
-    @Column(name = "phone_number", unique = true)
+    @Column(unique = true)
     String phoneNumber;
 
-    @Column(name = "creation_date")
     Timestamp creationDate;
 
-    @Column(name = "passport_id", unique = true)
+    @Column(unique = true)
     String passportId;
 
-    @Column(name = "driving_license_id", unique = true)
+    @Column(unique = true)
     String drivingLicenseId;
 }

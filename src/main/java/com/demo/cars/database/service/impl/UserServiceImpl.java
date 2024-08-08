@@ -1,6 +1,7 @@
 package com.demo.cars.database.service.impl;
 
 import com.demo.cars.database.exception.UniqueRecordException;
+import com.demo.cars.database.exception.UserNotFoundException;
 import com.demo.cars.database.repository.UserRepository;
 import com.demo.cars.database.service.UserService;
 import com.demo.cars.dto.UserDto;
@@ -9,10 +10,11 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.demo.cars.database.exception.UniqueRecordException.*;
 
 @Service
 @Transactional
@@ -23,15 +25,11 @@ public class UserServiceImpl implements UserService {
     UserMapper mapper;
 
     @Override
-    public UserDto regUser(UserDto userDto) throws UniqueRecordException {
-        var user = mapper.dtoToEntity(userDto);
-        try {
-            userRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            throw new UniqueRecordException(e.getMessage()); // custom exception
-        }
+    public void regUser(UserDto userDto) throws UniqueRecordException {
+        // validation
+        checkUniqueness(userDto);
 
-        return userDto; // договорились возвращать, но есть ли смысл тут, если и так передаем что возвращаем
+        userRepository.save(mapper.dtoToEntity(userDto));
     }
 
     @Override
@@ -45,17 +43,35 @@ public class UserServiceImpl implements UserService {
         if (optUser.isPresent()) {
             return mapper.entityToDto(optUser.get());
         } else {
-            return new UserDto();
+            return new UserDto(); // если не найден user,
+            // то наверное лучше выкинуть исключение, чем вернуть пустое dto ?
         }
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto) {
-        return null;
+    public UserDto updateUser(Long id, UserDto userDto) throws UserNotFoundException, UniqueRecordException {
+        userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        // validation
+        checkUniqueness(userDto);
+
+        var user = mapper.dtoToEntity(userDto);
+        return mapper.entityToDto(userRepository.save(user));
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id) throws UserNotFoundException {
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new); // а нужно ли исключение?
+        userRepository.deleteById(id);
+    }
 
+    private void checkUniqueness(UserDto userDto) throws UniqueRecordException {
+        if (userRepository.existsByEmail(userDto.getEmail())) throw new UniqueRecordException(EMAIL_EXC);
+        else if (userRepository.existsByPhoneNumber(userDto.getPhoneNumber()))
+            throw new UniqueRecordException(PHONE_EXC);
+        else if (userRepository.existsByPassportId(userDto.getPassportId()))
+            throw new UniqueRecordException(PASSPORT_EXC);
+        else if (userRepository.existsByDrivingLicenseId(userDto.getDrivingLicenseId()))
+            throw new UniqueRecordException(DR_LICENSE_EXC);
     }
 }
