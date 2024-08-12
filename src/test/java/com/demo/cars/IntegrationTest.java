@@ -1,4 +1,4 @@
-package com.demo.cars.database;
+package com.demo.cars;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -31,7 +31,6 @@ public abstract class IntegrationTest {
 
         flyway.migrate();
     }
-
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

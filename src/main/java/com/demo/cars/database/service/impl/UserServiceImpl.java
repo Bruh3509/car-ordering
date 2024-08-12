@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.demo.cars.database.exception.UniqueRecordException.*;
+import static com.demo.cars.database.utility.PropertyUtil.*;
 
 @Service
 @Transactional
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     UserMapper mapper;
 
     @Override
-    public void regUser(UserDto userDto) throws UniqueRecordException {
+    public void regUser(UserDto userDto) {
         // validation
         checkUniqueness(userDto);
 
@@ -39,18 +39,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        var optUser = userRepository.findById(id);
-        if (optUser.isPresent()) {
-            return mapper.entityToDto(optUser.get());
-        } else {
-            return new UserDto(); // если не найден user,
-            // то наверное лучше выкинуть исключение, чем вернуть пустое dto ?
-        }
+        return userRepository.findById(id)
+                .map(mapper::entityToDto)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) throws UserNotFoundException, UniqueRecordException {
-        userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public UserDto updateUser(Long id, UserDto userDto) {
+        userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
 
         // validation
         checkUniqueness(userDto);
@@ -60,13 +57,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) throws UserNotFoundException {
-        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new); // а нужно ли исключение?
+    public void deleteUser(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
         userRepository.deleteById(id);
     }
 
-    private void checkUniqueness(UserDto userDto) throws UniqueRecordException {
-        if (userRepository.existsByEmail(userDto.getEmail())) throw new UniqueRecordException(EMAIL_EXC);
+    private void checkUniqueness(UserDto userDto) {
+        if (userRepository.existsByEmail(userDto.getEmail()))
+            throw new UniqueRecordException(EMAIL_EXC);
         else if (userRepository.existsByPhoneNumber(userDto.getPhoneNumber()))
             throw new UniqueRecordException(PHONE_EXC);
         else if (userRepository.existsByPassportId(userDto.getPassportId()))
