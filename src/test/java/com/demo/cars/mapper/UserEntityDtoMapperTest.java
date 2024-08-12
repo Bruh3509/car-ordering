@@ -11,10 +11,8 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
 public class UserEntityDtoMapperTest {
-    @Autowired
-    private UserMapper mapper;
+    private final UserMapper mapper = new UserMapperImpl();
 
     @Test
     void testEntityDto() {
