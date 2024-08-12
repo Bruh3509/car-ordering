@@ -1,4 +1,4 @@
-package com.demo.cars.database.entity;
+package com.demo.cars.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

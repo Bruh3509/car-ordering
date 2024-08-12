@@ -1,10 +1,8 @@
 package com.demo.cars.mapper;
 
-import com.demo.cars.database.entity.User;
+import com.demo.cars.entity.User;
 import com.demo.cars.dto.UserDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Timestamp;
 import java.time.Instant;

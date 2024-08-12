@@ -1,6 +1,6 @@
 package com.demo.cars.mapper;
 
-import com.demo.cars.database.entity.User;
+import com.demo.cars.entity.User;
 import com.demo.cars.dto.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

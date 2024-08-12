@@ -1,4 +1,4 @@
-package com.demo.cars.database.exception;
+package com.demo.cars.exception;
 
 import lombok.NoArgsConstructor;
 

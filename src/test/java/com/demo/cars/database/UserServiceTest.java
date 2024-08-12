@@ -1,10 +1,10 @@
 package com.demo.cars.database;
 
-import com.demo.cars.database.entity.User;
-import com.demo.cars.database.exception.UniqueRecordException;
-import com.demo.cars.database.exception.UserNotFoundException;
-import com.demo.cars.database.repository.UserRepository;
-import com.demo.cars.database.service.impl.UserServiceImpl;
+import com.demo.cars.entity.User;
+import com.demo.cars.exception.UniqueRecordException;
+import com.demo.cars.exception.UserNotFoundException;
+import com.demo.cars.repository.UserRepository;
+import com.demo.cars.service.impl.UserServiceImpl;
 import com.demo.cars.dto.UserDto;
 import com.demo.cars.mapper.UserMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import static com.demo.cars.database.utility.PropertyUtil.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;

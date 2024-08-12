@@ -1,4 +1,4 @@
-package com.demo.cars.database.service;
+package com.demo.cars.service;
 
 import com.demo.cars.dto.UserDto;
 

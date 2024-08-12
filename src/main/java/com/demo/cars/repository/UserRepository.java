@@ -1,6 +1,6 @@
-package com.demo.cars.database.repository;
+package com.demo.cars.repository;
 
-import com.demo.cars.database.entity.User;
+import com.demo.cars.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

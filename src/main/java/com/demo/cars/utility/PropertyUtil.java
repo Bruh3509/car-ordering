@@ -1,4 +1,4 @@
-package com.demo.cars.database.utility;
+package com.demo.cars.utility;
 
 public final class PropertyUtil {
     public static String EMAIL_EXC = "email unique exception";

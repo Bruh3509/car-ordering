@@ -1,9 +1,9 @@
-package com.demo.cars.database.service.impl;
+package com.demo.cars.service.impl;
 
-import com.demo.cars.database.exception.UniqueRecordException;
-import com.demo.cars.database.exception.UserNotFoundException;
-import com.demo.cars.database.repository.UserRepository;
-import com.demo.cars.database.service.UserService;
+import com.demo.cars.exception.UniqueRecordException;
+import com.demo.cars.exception.UserNotFoundException;
+import com.demo.cars.repository.UserRepository;
+import com.demo.cars.service.UserService;
 import com.demo.cars.dto.UserDto;
 import com.demo.cars.mapper.UserMapper;
 import jakarta.transaction.Transactional;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.demo.cars.database.utility.PropertyUtil.*;
+import static com.demo.cars.utility.PropertyUtil.*;
 
 @Service
 @Transactional
