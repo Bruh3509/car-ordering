@@ -22,14 +22,14 @@ import java.util.Optional;
 
 import static com.demo.cars.utility.PropertyUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private UserMapperImpl userMapper = new UserMapperImpl();
+    private UserMapperImpl userMapper;
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -63,10 +63,10 @@ class UserServiceTest {
         );
 
         // act
-        given(userRepository.findAll())
-                .willReturn(List.of(user1));
-        given(userMapper.entityToDtoList(List.of(user1)))
-                .willReturn(List.of(user1Dto));
+        when(userRepository.findAll())
+                .thenReturn(List.of(user1));
+        when(userMapper.entityToDtoList(List.of(user1)))
+                .thenReturn(List.of(user1Dto));
         var user = userService.getAllUsers();
 
         // assert
@@ -87,13 +87,11 @@ class UserServiceTest {
         );
 
         // act
-        given(userRepository.existsByEmail(user.getEmail()))
-                .willReturn(true);
+        when(userRepository.existsByEmail(user.getEmail()))
+                .thenReturn(true);
 
         // assert
-        assertThrows(UniqueRecordException.class,
-                () -> userService.regUser(user),
-                EMAIL_EXC);
+        assertThrows(UniqueRecordException.class, () -> userService.regUser(user), EMAIL_EXC);
     }
 
     @Test
@@ -109,13 +107,11 @@ class UserServiceTest {
         );
 
         // act
-        given(userRepository.existsByPhoneNumber(user.getPhoneNumber()))
-                .willReturn(true);
+        when(userRepository.existsByPhoneNumber(user.getPhoneNumber()))
+                .thenReturn(true);
 
         // assert
-        assertThrows(UniqueRecordException.class,
-                () -> userService.regUser(user),
-                PHONE_EXC);
+        assertThrows(UniqueRecordException.class, () -> userService.regUser(user), PHONE_EXC);
     }
 
     @Test
@@ -131,13 +127,11 @@ class UserServiceTest {
         );
 
         // act
-        given(userRepository.existsByPassportId(user.getPassportId()))
-                .willReturn(true);
+        when(userRepository.existsByPassportId(user.getPassportId()))
+                .thenReturn(true);
 
         // assert
-        assertThrows(UniqueRecordException.class,
-                () -> userService.regUser(user),
-                PASSPORT_EXC);
+        assertThrows(UniqueRecordException.class, () -> userService.regUser(user), PASSPORT_EXC);
     }
 
     @Test
@@ -153,20 +147,18 @@ class UserServiceTest {
         );
 
         // act
-        given(userRepository.existsByDrivingLicenseId(user.getDrivingLicenseId()))
-                .willReturn(true);
+        when(userRepository.existsByDrivingLicenseId(user.getDrivingLicenseId()))
+                .thenReturn(true);
 
         // assert
-        assertThrows(UniqueRecordException.class,
-                () -> userService.regUser(user),
-                DR_LICENSE_EXC);
+        assertThrows(UniqueRecordException.class, () -> userService.regUser(user), DR_LICENSE_EXC);
     }
 
     @Test
     void testDeleteUserById() {
         // act
-        given(userRepository.existsById(1L))
-                .willReturn(true);
+        when(userRepository.existsById(1L))
+                .thenReturn(true);
 
         // assert
         assertDoesNotThrow(() -> userService.deleteUser(1L));
@@ -175,8 +167,8 @@ class UserServiceTest {
     @Test
     void testDeleteUserByIdExc() {
         // act
-        given(userRepository.existsById(1L))
-                .willReturn(false);
+        when(userRepository.existsById(1L))
+                .thenReturn(false);
 
         // assert
         assertThrows(UserNotFoundException.class, () -> userService.deleteUser(1L));
@@ -185,12 +177,14 @@ class UserServiceTest {
     @Test
     void testGetUserById() {
         // arrange
-        var user = new UserDto("Petya",
+        var user = new UserDto(
+                "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
                 "+375293455612",
                 "JASO1921AS",
-                "JI1O90KA1");
+                "JI1O90KA1"
+        );
         var userEntity = new User(
                 1L,
                 "Petya",
@@ -203,10 +197,10 @@ class UserServiceTest {
         );
 
         // act
-        given(userRepository.findById(1L))
-                .willReturn(Optional.of(userEntity));
-        given(userMapper.entityToDto(userEntity))
-                .willReturn(user);
+        when(userRepository.findById(1L))
+                .thenReturn(Optional.of(userEntity));
+        when(userMapper.entityToDto(userEntity))
+                .thenReturn(user);
 
         // assert
         assertEquals(userService.getUserById(1L), user);
@@ -215,8 +209,8 @@ class UserServiceTest {
     @Test
     void testGetUserByIdExc() {
         // act
-        given(userRepository.findById(1L))
-                .willReturn(Optional.empty());
+        when(userRepository.findById(1L))
+                .thenReturn(Optional.empty());
 
         // assert
         assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
@@ -225,12 +219,14 @@ class UserServiceTest {
     @Test
     void testUpdateUser() {
         // arrange
-        var user = new UserDto("Petya",
+        var user = new UserDto(
+                "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
                 "+375293455612",
                 "JASO1921AS",
-                "JI1O90KA1");
+                "JI1O90KA1"
+        );
         var userEntity = new User(
                 1L,
                 "Petya",
@@ -243,14 +239,14 @@ class UserServiceTest {
         );
 
         // act
-        given(userRepository.existsById(1L))
-                .willReturn(true);
-        given(userMapper.dtoToEntity(user))
-                .willReturn(userEntity);
-        given(userRepository.save(userEntity))
-                .willReturn(userEntity);
-        given(userMapper.entityToDto(userEntity))
-                .willReturn(user);
+        when(userRepository.existsById(1L))
+                .thenReturn(true);
+        when(userMapper.dtoToEntity(user))
+                .thenReturn(userEntity);
+        when(userRepository.save(userEntity))
+                .thenReturn(userEntity);
+        when(userMapper.entityToDto(userEntity))
+                .thenReturn(user);
 
         // assert
         assertEquals(userService.updateUser(1L, user), user);
@@ -259,16 +255,18 @@ class UserServiceTest {
     @Test
     void testUpdateUserExc() {
         // arrange
-        var user = new UserDto("Petya",
+        var user = new UserDto(
+                "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
                 "+375293455612",
                 "JASO1921AS",
-                "JI1O90KA1");
+                "JI1O90KA1"
+        );
 
         // act
-        given(userRepository.existsById(1L))
-                .willReturn(false);
+        when(userRepository.existsById(1L))
+                .thenReturn(false);
 
         // assert
         assertThrows(UserNotFoundException.class, () -> userService.updateUser(1L, user));
