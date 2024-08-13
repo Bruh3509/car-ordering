@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.demo.cars.utility.PropertyUtil.*;
+import static com.demo.cars.util.PropertyUtil.*;
 
 @Service
 @Transactional
@@ -45,12 +45,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
-        if (!userRepository.existsById(id))
-            throw new UserNotFoundException();
+        var user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
 
-        checkUniqueness(userDto);
+        checkUniquenessAndIdNot(userDto, id);
 
-        var user = mapper.dtoToEntity(userDto);
+        user.setFirstname(userDto.getFirstname());
+        user.setLastname(userDto.getLastname());
+        user.setEmail(userDto.getEmail());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setPassportId(userDto.getPassportId());
+        user.setDrivingLicenseId(userDto.getDrivingLicenseId());
+
         return mapper.entityToDto(userRepository.save(user));
     }
 
@@ -60,6 +66,17 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException();
 
         userRepository.deleteById(id);
+    }
+
+    private void checkUniquenessAndIdNot(UserDto userDto, Long id) {
+        if (userRepository.existsByEmailAndIdNot(userDto.getEmail(), id))
+            throw new UniqueRecordException(EMAIL_EXC);
+        else if (userRepository.existsByPhoneNumberAndIdNot(userDto.getPhoneNumber(), id))
+            throw new UniqueRecordException(PHONE_EXC);
+        else if (userRepository.existsByPassportIdAndIdNot(userDto.getPassportId(), id))
+            throw new UniqueRecordException(PASSPORT_EXC);
+        else if (userRepository.existsByDrivingLicenseIdAndIdNot(userDto.getDrivingLicenseId(), id))
+            throw new UniqueRecordException(DR_LICENSE_EXC);
     }
 
     private void checkUniqueness(UserDto userDto) {

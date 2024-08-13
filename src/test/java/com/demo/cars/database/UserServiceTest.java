@@ -20,7 +20,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import static com.demo.cars.utility.PropertyUtil.*;
+import static com.demo.cars.util.PropertyUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -239,10 +239,8 @@ class UserServiceTest {
         );
 
         // act
-        when(userRepository.existsById(1L))
-                .thenReturn(true);
-        when(userMapper.dtoToEntity(user))
-                .thenReturn(userEntity);
+        when(userRepository.findById(1L))
+                .thenReturn(Optional.of(userEntity));
         when(userRepository.save(userEntity))
                 .thenReturn(userEntity);
         when(userMapper.entityToDto(userEntity))
@@ -265,8 +263,8 @@ class UserServiceTest {
         );
 
         // act
-        when(userRepository.existsById(1L))
-                .thenReturn(false);
+        when(userRepository.findById(1L))
+                .thenReturn(Optional.empty());
 
         // assert
         assertThrows(UserNotFoundException.class, () -> userService.updateUser(1L, user));

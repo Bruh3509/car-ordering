@@ -2,6 +2,8 @@ package com.demo.cars.mapper;
 
 import com.demo.cars.dto.UserDto;
 import com.demo.cars.entity.User;
+import com.demo.cars.model.UserRequest;
+import com.demo.cars.model.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,4 +17,8 @@ public interface UserMapper {
     UserDto entityToDto(User user);
 
     List<UserDto> entityToDtoList(List<User> userDto);
+
+    UserDto requestToDto(UserRequest userRequest);
+
+    UserResponse dtoToResponse(UserDto userDto);
 }
