@@ -1,11 +1,11 @@
 package com.demo.cars.service.impl;
 
+import com.demo.cars.dto.UserDto;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.exception.UserNotFoundException;
+import com.demo.cars.mapper.UserMapper;
 import com.demo.cars.repository.UserRepository;
 import com.demo.cars.service.UserService;
-import com.demo.cars.dto.UserDto;
-import com.demo.cars.mapper.UserMapper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void regUser(UserDto userDto) {
-        // validation
         checkUniqueness(userDto);
 
         userRepository.save(mapper.dtoToEntity(userDto));
@@ -46,10 +45,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
-        userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+        if (!userRepository.existsById(id))
+            throw new UserNotFoundException();
 
-        // validation
         checkUniqueness(userDto);
 
         var user = mapper.dtoToEntity(userDto);
@@ -58,8 +56,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+        if (!userRepository.existsById(id))
+            throw new UserNotFoundException();
+
         userRepository.deleteById(id);
     }
 
