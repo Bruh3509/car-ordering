@@ -3,8 +3,12 @@ spring:
     name: cars
   flyway:
     enabled: false
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
   datasource:
-    url: jdbc:mysql://localhost:3306/cars
+    url: jdbc:mysql://localhost:3306/cars?allowPublicKeyRetrieval=true
     username: user
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
