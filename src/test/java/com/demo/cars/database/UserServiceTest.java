@@ -65,7 +65,7 @@ class UserServiceTest {
         // act
         when(userRepository.findAll())
                 .thenReturn(List.of(user1));
-        when(userMapper.entityToDtoList(List.of(user1)))
+        when(userMapper.entityToDto(List.of(user1)))
                 .thenReturn(List.of(user1Dto));
         var user = userService.getAllUsers();
 
@@ -241,6 +241,14 @@ class UserServiceTest {
         // act
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(userEntity));
+        when(userRepository.existsByEmailAndIdNot(user.getEmail(), userEntity.getId()))
+                .thenReturn(false);
+        when(userRepository.existsByPhoneNumberAndIdNot(user.getPhoneNumber(), userEntity.getId()))
+                .thenReturn(false);
+        when(userRepository.existsByPassportIdAndIdNot(user.getPassportId(), userEntity.getId()))
+                .thenReturn(false);
+        when(userRepository.existsByDrivingLicenseIdAndIdNot(user.getDrivingLicenseId(), userEntity.getId()))
+                .thenReturn(false);
         when(userRepository.save(userEntity))
                 .thenReturn(userEntity);
         when(userMapper.entityToDto(userEntity))

@@ -1,6 +1,6 @@
-package com.demo.cars.model;
+package com.demo.cars.model.user;
 
-public record UserRequest(
+public record UserResponse(
         String firstname,
         String lastname,
         String email,
