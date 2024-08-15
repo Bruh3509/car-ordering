@@ -41,7 +41,7 @@ public class CarController {
     @PostMapping(value = "/register", consumes = "application/json")
     public ResponseEntity<Void> regNewCar(@RequestBody CarRequest request) {
         carService.regCar(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/{id}/update", consumes = "application/json", produces = "application/json")
@@ -56,6 +56,6 @@ public class CarController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteCar(@PathVariable Long id) {
         carService.deleteCar(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
