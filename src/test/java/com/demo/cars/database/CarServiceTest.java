@@ -5,6 +5,7 @@ import com.demo.cars.entity.Car;
 import com.demo.cars.exception.CarNotFoundException;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.mapper.CarMapperImpl;
+import com.demo.cars.model.car.CarRequest;
 import com.demo.cars.repository.CarRepository;
 import com.demo.cars.service.impl.CarServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,9 @@ import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,13 +90,25 @@ class CarServiceTest {
                 true,
                 100
         );
+        var carRequest = new CarRequest(
+                "Sedan",
+                "BMW",
+                "M5 F90",
+                (byte) 4,
+                Year.of(2020),
+                "1234 AM-7",
+                true,
+                100
+        );
 
         // act
         when(carRepository.existsByPlateNumber(carDto.getPlateNumber()))
                 .thenReturn(false);
+        when(carMapper.requestToDto(carRequest))
+                .thenReturn(carDto);
 
         // assert
-        assertDoesNotThrow(() -> carService.regCar(carDto));
+        assertDoesNotThrow(() -> carService.regCar(carRequest));
     }
 
     @Test
@@ -109,13 +124,25 @@ class CarServiceTest {
                 true,
                 100
         );
+        var carRequest = new CarRequest(
+                "Sedan",
+                "BMW",
+                "M5 F90",
+                (byte) 4,
+                Year.of(2020),
+                "1234 AM-7",
+                true,
+                100
+        );
 
         // act
         when(carRepository.existsByPlateNumber(carDto.getPlateNumber()))
                 .thenReturn(true);
+        when(carMapper.requestToDto(carRequest))
+                .thenReturn(carDto);
 
         // assert
-        assertThrows(UniqueRecordException.class, () -> carService.regCar(carDto));
+        assertThrows(UniqueRecordException.class, () -> carService.regCar(carRequest));
     }
 
     @Test
@@ -202,6 +229,16 @@ class CarServiceTest {
                 true,
                 100
         );
+        var carRequest = new CarRequest(
+                "Universal",
+                "BMW",
+                "M5 F90",
+                (byte) 4,
+                Year.of(2020),
+                "1234 AM-7",
+                true,
+                100
+        );
 
         // act
         when(carRepository.findById(carEntity.getId()))
@@ -212,7 +249,9 @@ class CarServiceTest {
                 .thenReturn(carEntity);
         when(carMapper.entityToDto(carEntity))
                 .thenReturn(carDto);
-        var car = carService.updateCar(carEntity.getId(), carDto);
+        when(carMapper.requestToDto(carRequest))
+                .thenReturn(carDto);
+        var car = carService.updateCar(carEntity.getId(), carRequest);
 
         // assert
         assertEquals(carDto, car);
@@ -232,7 +271,7 @@ class CarServiceTest {
                 true,
                 100
         );
-        var carDto = new CarDto(
+        var carRequest = new CarRequest(
                 "Universal",
                 "BMW",
                 "M5 F90",
@@ -248,7 +287,7 @@ class CarServiceTest {
                 .thenReturn(Optional.empty());
 
         // assert
-        assertThrows(CarNotFoundException.class, () -> carService.updateCar(1L, carDto));
+        assertThrows(CarNotFoundException.class, () -> carService.updateCar(1L, carRequest));
     }
 
     @Test
@@ -276,14 +315,26 @@ class CarServiceTest {
                 true,
                 100
         );
+        var carRequest = new CarRequest(
+                "Universal",
+                "BMW",
+                "M5 F90",
+                (byte) 4,
+                Year.of(2020),
+                "1234 AM-7",
+                true,
+                100
+        );
 
         // act
         when(carRepository.findById(carEntity.getId()))
                 .thenReturn(Optional.of(carEntity));
         when(carRepository.existsByPlateNumberAndIdNot(carDto.getPlateNumber(), carEntity.getId()))
                 .thenReturn(true);
+        when(carMapper.requestToDto(carRequest))
+                .thenReturn(carDto);
 
         // assert
-        assertThrows(UniqueRecordException.class, () -> carService.updateCar(1L, carDto));
+        assertThrows(UniqueRecordException.class, () -> carService.updateCar(1L, carRequest));
     }
 }

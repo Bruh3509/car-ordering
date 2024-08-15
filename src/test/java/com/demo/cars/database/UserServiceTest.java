@@ -20,8 +20,13 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import static com.demo.cars.util.PropertyUtil.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.demo.cars.util.PropertyUtil.DR_LICENSE_EXC;
+import static com.demo.cars.util.PropertyUtil.EMAIL_EXC;
+import static com.demo.cars.util.PropertyUtil.PASSPORT_EXC;
+import static com.demo.cars.util.PropertyUtil.PHONE_EXC;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

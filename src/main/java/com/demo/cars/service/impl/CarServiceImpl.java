@@ -4,6 +4,7 @@ import com.demo.cars.dto.CarDto;
 import com.demo.cars.exception.CarNotFoundException;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.mapper.CarMapper;
+import com.demo.cars.model.car.CarRequest;
 import com.demo.cars.repository.CarRepository;
 import com.demo.cars.service.CarService;
 import jakarta.transaction.Transactional;
@@ -25,7 +26,9 @@ public class CarServiceImpl implements CarService {
     CarMapper carMapper;
 
     @Override
-    public void regCar(CarDto carDto) {
+    public void regCar(CarRequest carRequest) {
+        var carDto = carMapper.requestToDto(carRequest);
+
         checkUniqueness(carDto.getPlateNumber());
 
         carRepository.save(carMapper.dtoToEntity(carDto));
@@ -44,9 +47,10 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarDto updateCar(Long id, CarDto carDto) {
+    public CarDto updateCar(Long id, CarRequest carRequest) {
         var car = carRepository.findById(id)
                 .orElseThrow(CarNotFoundException::new);
+        var carDto = carMapper.requestToDto(carRequest);
 
         checkUniquenessAndIdNot(id, carDto.getPlateNumber());
 

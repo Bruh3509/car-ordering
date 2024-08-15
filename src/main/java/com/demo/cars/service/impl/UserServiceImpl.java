@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.demo.cars.util.PropertyUtil.*;
+import static com.demo.cars.util.PropertyUtil.DR_LICENSE_EXC;
+import static com.demo.cars.util.PropertyUtil.EMAIL_EXC;
+import static com.demo.cars.util.PropertyUtil.PASSPORT_EXC;
+import static com.demo.cars.util.PropertyUtil.PHONE_EXC;
 
 @Service
 @Transactional
