@@ -4,6 +4,7 @@ import com.demo.cars.dto.UserDto;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.exception.UserNotFoundException;
 import com.demo.cars.mapper.UserMapper;
+import com.demo.cars.model.UserRequest;
 import com.demo.cars.repository.UserRepository;
 import com.demo.cars.service.UserService;
 import jakarta.transaction.Transactional;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.demo.cars.util.PropertyUtil.*;
+import static com.demo.cars.util.PropertyUtil.DR_LICENSE_EXC;
+import static com.demo.cars.util.PropertyUtil.EMAIL_EXC;
+import static com.demo.cars.util.PropertyUtil.PASSPORT_EXC;
+import static com.demo.cars.util.PropertyUtil.PHONE_EXC;
 
 @Service
 @Transactional
@@ -22,31 +26,34 @@ import static com.demo.cars.util.PropertyUtil.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
     UserRepository userRepository;
-    UserMapper mapper;
+    UserMapper userMapper;
 
     @Override
-    public void regUser(UserDto userDto) {
+    public void regUser(UserRequest userRequest) {
+        var userDto = userMapper.requestToDto(userRequest);
+
         checkUniqueness(userDto);
 
-        userRepository.save(mapper.dtoToEntity(userDto));
+        userRepository.save(userMapper.dtoToEntity(userDto));
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return mapper.entityToDtoList(userRepository.findAll());
+        return userMapper.entityToDtoList(userRepository.findAll());
     }
 
     @Override
     public UserDto getUserById(Long id) {
         return userRepository.findById(id)
-                .map(mapper::entityToDto)
+                .map(userMapper::entityToDto)
                 .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) {
+    public UserDto updateUser(Long id, UserRequest userRequest) {
         var user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+        var userDto = userMapper.requestToDto(userRequest);
 
         checkUniquenessAndIdNot(userDto, id);
 
@@ -57,7 +64,7 @@ public class UserServiceImpl implements UserService {
         user.setPassportId(userDto.getPassportId());
         user.setDrivingLicenseId(userDto.getDrivingLicenseId());
 
-        return mapper.entityToDto(userRepository.save(user));
+        return userMapper.entityToDto(userRepository.save(user));
     }
 
     @Override
