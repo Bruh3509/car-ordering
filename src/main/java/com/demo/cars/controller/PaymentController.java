@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +43,7 @@ public class PaymentController {
 
     @PostMapping(value = "/add", produces = "application/json", consumes = "application/json")
     public ResponseEntity<PaymentDto> addNewPayment(@RequestBody PaymentRequest request) {
-        return new ResponseEntity<>(service.addPayment(request), HttpStatus.OK);
+        return new ResponseEntity<>(service.addPayment(request), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/update/{id}", produces = "application/json", consumes = "application/json")
@@ -51,5 +52,11 @@ public class PaymentController {
             @RequestBody PaymentRequest request
     ) {
         return new ResponseEntity<>(service.updatePayment(id, request), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
+        service.deletePayment(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
