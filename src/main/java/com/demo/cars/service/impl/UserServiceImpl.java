@@ -4,6 +4,7 @@ import com.demo.cars.dto.UserDto;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.exception.UserNotFoundException;
 import com.demo.cars.mapper.UserMapper;
+import com.demo.cars.model.UserRequest;
 import com.demo.cars.repository.UserRepository;
 import com.demo.cars.service.UserService;
 import jakarta.transaction.Transactional;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.demo.cars.utility.PropertyUtil.*;
+import static com.demo.cars.util.PropertyUtil.DR_LICENSE_EXC;
+import static com.demo.cars.util.PropertyUtil.EMAIL_EXC;
+import static com.demo.cars.util.PropertyUtil.PASSPORT_EXC;
+import static com.demo.cars.util.PropertyUtil.PHONE_EXC;
 
 @Service
 @Transactional
@@ -22,36 +26,45 @@ import static com.demo.cars.utility.PropertyUtil.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
     UserRepository userRepository;
-    UserMapper mapper;
+    UserMapper userMapper;
 
     @Override
-    public void regUser(UserDto userDto) {
+    public void regUser(UserRequest userRequest) {
+        var userDto = userMapper.requestToDto(userRequest);
+
         checkUniqueness(userDto);
 
-        userRepository.save(mapper.dtoToEntity(userDto));
+        userRepository.save(userMapper.dtoToEntity(userDto));
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return mapper.entityToDtoList(userRepository.findAll());
+        return userMapper.entityToDtoList(userRepository.findAll());
     }
 
     @Override
     public UserDto getUserById(Long id) {
         return userRepository.findById(id)
-                .map(mapper::entityToDto)
+                .map(userMapper::entityToDto)
                 .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) {
-        if (!userRepository.existsById(id))
-            throw new UserNotFoundException();
+    public UserDto updateUser(Long id, UserRequest userRequest) {
+        var user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        var userDto = userMapper.requestToDto(userRequest);
 
-        checkUniqueness(userDto);
+        checkUniquenessAndIdNot(userDto, id);
 
-        var user = mapper.dtoToEntity(userDto);
-        return mapper.entityToDto(userRepository.save(user));
+        user.setFirstname(userDto.getFirstname());
+        user.setLastname(userDto.getLastname());
+        user.setEmail(userDto.getEmail());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setPassportId(userDto.getPassportId());
+        user.setDrivingLicenseId(userDto.getDrivingLicenseId());
+
+        return userMapper.entityToDto(userRepository.save(user));
     }
 
     @Override
@@ -60,6 +73,17 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException();
 
         userRepository.deleteById(id);
+    }
+
+    private void checkUniquenessAndIdNot(UserDto userDto, Long id) {
+        if (userRepository.existsByEmailAndIdNot(userDto.getEmail(), id))
+            throw new UniqueRecordException(EMAIL_EXC);
+        else if (userRepository.existsByPhoneNumberAndIdNot(userDto.getPhoneNumber(), id))
+            throw new UniqueRecordException(PHONE_EXC);
+        else if (userRepository.existsByPassportIdAndIdNot(userDto.getPassportId(), id))
+            throw new UniqueRecordException(PASSPORT_EXC);
+        else if (userRepository.existsByDrivingLicenseIdAndIdNot(userDto.getDrivingLicenseId(), id))
+            throw new UniqueRecordException(DR_LICENSE_EXC);
     }
 
     private void checkUniqueness(UserDto userDto) {

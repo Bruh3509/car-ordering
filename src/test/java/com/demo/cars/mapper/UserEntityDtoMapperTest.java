@@ -1,7 +1,7 @@
 package com.demo.cars.mapper;
 
-import com.demo.cars.entity.User;
 import com.demo.cars.dto.UserDto;
+import com.demo.cars.entity.User;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
