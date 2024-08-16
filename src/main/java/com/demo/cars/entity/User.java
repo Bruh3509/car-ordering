@@ -1,24 +1,26 @@
 package com.demo.cars.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name = "_user")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
@@ -41,4 +43,27 @@ public class User {
 
     @Column(unique = true)
     String drivingLicenseId;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<Payment> payments = new LinkedList<>();
+
+    public User(
+            Long id,
+            String firstname,
+            String lastname,
+            String email,
+            String phoneNumber,
+            Timestamp creationDate,
+            String passportId,
+            String drivingLicenseId
+    ) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.creationDate = creationDate;
+        this.passportId = passportId;
+        this.drivingLicenseId = drivingLicenseId;
+    }
 }
