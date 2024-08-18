@@ -5,6 +5,7 @@ import com.demo.cars.entity.User;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.exception.UserNotFoundException;
 import com.demo.cars.mapper.UserMapperImpl;
+import com.demo.cars.model.UserRequest;
 import com.demo.cars.repository.UserRepository;
 import com.demo.cars.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,7 +83,15 @@ class UserServiceTest {
     @Test
     void testUniqueEmail() {
         // arrange
-        var user = new UserDto(
+        var user = new UserRequest(
+                "Petya",
+                "Sidorov",
+                "sidorov@innowise.com",
+                "+375293455612",
+                "JASO1921AS",
+                "JI1O90KA1"
+        );
+        var userDto = new UserDto(
                 "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
@@ -92,8 +101,10 @@ class UserServiceTest {
         );
 
         // act
-        when(userRepository.existsByEmail(user.getEmail()))
+        when(userRepository.existsByEmail(user.email()))
                 .thenReturn(true);
+        when(userMapper.requestToDto(user))
+                .thenReturn(userDto);
 
         // assert
         assertThrows(UniqueRecordException.class, () -> userService.regUser(user), EMAIL_EXC);
@@ -102,7 +113,15 @@ class UserServiceTest {
     @Test
     void testUniquePhone() {
         // arrange
-        var user = new UserDto(
+        var user = new UserRequest(
+                "Petya",
+                "Sidorov",
+                "sidorov@innowise.com",
+                "+375293455612",
+                "JASO1921AS",
+                "JI1O90KA1"
+        );
+        var userDto = new UserDto(
                 "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
@@ -112,8 +131,10 @@ class UserServiceTest {
         );
 
         // act
-        when(userRepository.existsByPhoneNumber(user.getPhoneNumber()))
+        when(userRepository.existsByPhoneNumber(user.phoneNumber()))
                 .thenReturn(true);
+        when(userMapper.requestToDto(user))
+                .thenReturn(userDto);
 
         // assert
         assertThrows(UniqueRecordException.class, () -> userService.regUser(user), PHONE_EXC);
@@ -122,7 +143,15 @@ class UserServiceTest {
     @Test
     void testUniquePassport() {
         // arrange
-        var user = new UserDto(
+        var user = new UserRequest(
+                "Petya",
+                "Sidorov",
+                "sidorov@innowise.com",
+                "+375293455612",
+                "JASO1921AS",
+                "JI1O90KA1"
+        );
+        var userDto = new UserDto(
                 "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
@@ -132,8 +161,10 @@ class UserServiceTest {
         );
 
         // act
-        when(userRepository.existsByPassportId(user.getPassportId()))
+        when(userRepository.existsByPassportId(user.passportId()))
                 .thenReturn(true);
+        when(userMapper.requestToDto(user))
+                .thenReturn(userDto);
 
         // assert
         assertThrows(UniqueRecordException.class, () -> userService.regUser(user), PASSPORT_EXC);
@@ -142,7 +173,15 @@ class UserServiceTest {
     @Test
     void testUniqueDrivingLic() {
         // arrange
-        var user = new UserDto(
+        var user = new UserRequest(
+                "Petya",
+                "Sidorov",
+                "sidorov@innowise.com",
+                "+375293455612",
+                "JASO1921AS",
+                "JI1O90KA1"
+        );
+        var userDto = new UserDto(
                 "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
@@ -152,8 +191,10 @@ class UserServiceTest {
         );
 
         // act
-        when(userRepository.existsByDrivingLicenseId(user.getDrivingLicenseId()))
+        when(userRepository.existsByDrivingLicenseId(user.drivingLicenseId()))
                 .thenReturn(true);
+        when(userMapper.requestToDto(user))
+                .thenReturn(userDto);
 
         // assert
         assertThrows(UniqueRecordException.class, () -> userService.regUser(user), DR_LICENSE_EXC);
@@ -224,7 +265,15 @@ class UserServiceTest {
     @Test
     void testUpdateUser() {
         // arrange
-        var user = new UserDto(
+        var user = new UserRequest(
+                "Petya",
+                "Sidorov",
+                "sidorov@innowise.com",
+                "+375293455612",
+                "JASO1921AS",
+                "JI1O90KA1"
+        );
+        var userDto = new UserDto(
                 "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
@@ -257,16 +306,18 @@ class UserServiceTest {
         when(userRepository.save(userEntity))
                 .thenReturn(userEntity);
         when(userMapper.entityToDto(userEntity))
-                .thenReturn(user);
+                .thenReturn(userDto);
+        when(userMapper.requestToDto(user))
+                .thenReturn(userDto);
 
         // assert
-        assertEquals(userService.updateUser(1L, user), user);
+        assertEquals(userService.updateUser(1L, user), userDto);
     }
 
     @Test
     void testUpdateUserExc() {
         // arrange
-        var user = new UserDto(
+        var user = new UserRequest(
                 "Petya",
                 "Sidorov",
                 "sidorov@innowise.com",
