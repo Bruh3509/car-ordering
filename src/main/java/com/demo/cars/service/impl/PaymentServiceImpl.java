@@ -3,7 +3,8 @@ package com.demo.cars.service.impl;
 import com.demo.cars.dto.PaymentDto;
 import com.demo.cars.exception.PaymentNotFoundException;
 import com.demo.cars.mapper.PaymentMapper;
-import com.demo.cars.model.PaymentRequest;
+import com.demo.cars.model.payment.PaymentRequest;
+import com.demo.cars.model.payment.PaymentUpdateRequest;
 import com.demo.cars.repository.PaymentRepository;
 import com.demo.cars.service.PaymentService;
 import jakarta.transaction.Transactional;
@@ -51,11 +52,10 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentDto updatePayment(Long id, PaymentRequest request) {
+    public PaymentDto updatePayment(Long id, PaymentUpdateRequest request) {
         var payment = repository.findById(id)
                 .orElseThrow(PaymentNotFoundException::new);
 
-        // how better to handle the fact that we cannot change userId, just do not use it in request -> create new request for update?
         payment.setStatus(request.status());
         payment.setUrl(request.url());
         payment.setPaymentAmount(request.paymentAmount());

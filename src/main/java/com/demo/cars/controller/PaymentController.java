@@ -1,7 +1,8 @@
 package com.demo.cars.controller;
 
 import com.demo.cars.dto.PaymentDto;
-import com.demo.cars.model.PaymentRequest;
+import com.demo.cars.model.payment.PaymentRequest;
+import com.demo.cars.model.payment.PaymentUpdateRequest;
 import com.demo.cars.service.PaymentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +50,7 @@ public class PaymentController {
     @PatchMapping(value = "/update/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<PaymentDto> updatePaymentInfo(
             @PathVariable Long id,
-            @RequestBody PaymentRequest request
+            @RequestBody PaymentUpdateRequest request
     ) {
         return new ResponseEntity<>(service.updatePayment(id, request), HttpStatus.OK);
     }

@@ -2,7 +2,7 @@ package com.demo.cars.mapper;
 
 import com.demo.cars.dto.PaymentDto;
 import com.demo.cars.entity.Payment;
-import com.demo.cars.model.PaymentRequest;
+import com.demo.cars.model.payment.PaymentRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

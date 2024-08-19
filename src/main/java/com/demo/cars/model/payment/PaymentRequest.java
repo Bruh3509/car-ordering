@@ -1,4 +1,4 @@
-package com.demo.cars.model;
+package com.demo.cars.model.payment;
 
 public record PaymentRequest(
         Long userId,
