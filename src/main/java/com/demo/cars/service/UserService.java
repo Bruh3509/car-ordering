@@ -1,7 +1,7 @@
 package com.demo.cars.service;
 
 import com.demo.cars.dto.UserDto;
-import com.demo.cars.model.UserRequest;
+import com.demo.cars.model.user.UserRequest;
 
 import java.util.List;
 
