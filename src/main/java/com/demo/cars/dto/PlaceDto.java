@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PlacesDto {
-    Double longitude;
-    Double latitude;
+public class PlaceDto {
+    double longitude;
+    double latitude;
 }
