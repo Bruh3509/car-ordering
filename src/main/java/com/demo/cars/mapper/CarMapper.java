@@ -4,6 +4,7 @@ import com.demo.cars.dto.CarDto;
 import com.demo.cars.entity.Car;
 import com.demo.cars.model.car.CarRequest;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -15,5 +16,6 @@ public interface CarMapper {
 
     List<CarDto> entityToDto(List<Car> cars);
 
+    @Mapping(target = "place.id", source = "branchId")
     CarDto requestToDto(CarRequest request);
 }

@@ -1,5 +1,6 @@
 package com.demo.cars.dto;
 
+import com.demo.cars.entity.Place;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.time.Year;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CarDto {
+    Place place; // TODO replace with another class (PlaceDto or smth)
     String carClass;
     String brand;
     String model;

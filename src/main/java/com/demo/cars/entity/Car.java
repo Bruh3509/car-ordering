@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,10 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @OneToOne
+    @JoinColumn(name = "branch_id")
+    Place place;
+
     String carClass;
     String brand;
     String model;
@@ -42,6 +48,7 @@ public class Car {
 
     public Car(
             Long id,
+            Place place,
             String carClass,
             String brand,
             String model,

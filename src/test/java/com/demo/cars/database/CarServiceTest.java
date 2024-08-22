@@ -2,6 +2,7 @@ package com.demo.cars.database;
 
 import com.demo.cars.dto.CarDto;
 import com.demo.cars.entity.Car;
+import com.demo.cars.entity.Place;
 import com.demo.cars.exception.CarNotFoundException;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.mapper.CarMapperImpl;
@@ -11,6 +12,8 @@ import com.demo.cars.service.impl.CarServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -20,6 +23,7 @@ import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
+import static com.demo.cars.util.PropertyUtil.SRID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,8 +47,18 @@ class CarServiceTest {
     @Test
     void testFindAll() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var carEntity = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -55,6 +69,7 @@ class CarServiceTest {
                 100
         );
         var carDto = new CarDto(
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -80,7 +95,17 @@ class CarServiceTest {
     @Test
     void testRegCar() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var carDto = new CarDto(
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -91,6 +116,7 @@ class CarServiceTest {
                 100
         );
         var carRequest = new CarRequest(
+                1L,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -114,7 +140,17 @@ class CarServiceTest {
     @Test
     void testRegCarExc() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var carDto = new CarDto(
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -125,6 +161,7 @@ class CarServiceTest {
                 100
         );
         var carRequest = new CarRequest(
+                1L,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -148,8 +185,18 @@ class CarServiceTest {
     @Test
     void testGetById() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var carEntity = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -160,6 +207,7 @@ class CarServiceTest {
                 100
         );
         var carDto = new CarDto(
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -184,8 +232,18 @@ class CarServiceTest {
     @Test
     void testGetByIdExc() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var carEntity = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -207,8 +265,18 @@ class CarServiceTest {
     @Test
     void testUpdateCar() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var carEntity = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -220,6 +288,7 @@ class CarServiceTest {
         );
 
         var carDto = new CarDto(
+                place,
                 "Universal",
                 "BMW",
                 "M5 F90",
@@ -230,6 +299,7 @@ class CarServiceTest {
                 100
         );
         var carRequest = new CarRequest(
+                1L,
                 "Universal",
                 "BMW",
                 "M5 F90",
@@ -260,8 +330,18 @@ class CarServiceTest {
     @Test
     void testUpdateCarNotFoundExc() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var carEntity = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -272,6 +352,7 @@ class CarServiceTest {
                 100
         );
         var carRequest = new CarRequest(
+                1L,
                 "Universal",
                 "BMW",
                 "M5 F90",
@@ -293,8 +374,18 @@ class CarServiceTest {
     @Test
     void testUpdateCarUniqueExc() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var carEntity = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -306,6 +397,7 @@ class CarServiceTest {
         );
 
         var carDto = new CarDto(
+                place,
                 "Universal",
                 "BMW",
                 "M5 F90",
@@ -316,6 +408,7 @@ class CarServiceTest {
                 100
         );
         var carRequest = new CarRequest(
+                1L,
                 "Universal",
                 "BMW",
                 "M5 F90",
