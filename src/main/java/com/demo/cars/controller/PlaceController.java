@@ -3,6 +3,8 @@ package com.demo.cars.controller;
 import com.demo.cars.dto.PlaceDto;
 import com.demo.cars.model.places.PlaceRequest;
 import com.demo.cars.service.PlaceService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/place")
+@Tag(name = "place-controller", description = "managing place logic")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PlaceController {
@@ -32,25 +35,36 @@ public class PlaceController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<PlaceDto> getPlaceById(@PathVariable long id) {
+    public ResponseEntity<PlaceDto> getPlaceById(
+            @PathVariable long id
+    ) {
         return new ResponseEntity<>(service.getPlaceById(id), HttpStatus.OK);
     }
 
     @PostMapping(value = "/place", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<PlaceDto> addNewPlace(@RequestBody PlaceRequest request) {
+    public ResponseEntity<PlaceDto> addNewPlace(
+            @RequestBody
+            @Parameter(name = "new place post request")
+            PlaceRequest request
+    ) {
         return new ResponseEntity<>(service.addPlace(request), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/update/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<PlaceDto> updatePlaceInfo(
-            @PathVariable long id,
-            @RequestBody PlaceRequest request
+            @PathVariable
+            long id,
+            @RequestBody
+            @Parameter(name = "update place info request", required = true)
+            PlaceRequest request
     ) {
         return new ResponseEntity<>(service.updatePlace(id, request), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlace(@PathVariable long id) {
+    public ResponseEntity<Void> deletePlace(
+            @PathVariable long id
+    ) {
         service.deletePlace(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

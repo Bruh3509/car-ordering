@@ -4,6 +4,8 @@ import com.demo.cars.dto.PaymentDto;
 import com.demo.cars.model.payment.PaymentRequest;
 import com.demo.cars.model.payment.PaymentUpdateRequest;
 import com.demo.cars.service.PaymentService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,13 +24,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/payment")
+@Tag(name = "payment-controller", description = "managing payments logic")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaymentController {
     PaymentService service;
 
     @GetMapping(value = "/user-id/{id}", produces = "application/json")
-    public ResponseEntity<List<PaymentDto>> getPaymentsInfoByUser(@PathVariable Long id) {
+    public ResponseEntity<List<PaymentDto>> getPaymentsInfoByUser(
+            @PathVariable Long id
+    ) {
         return new ResponseEntity<>(service.getPaymentsByUserId(id), HttpStatus.OK);
     }
 
@@ -38,25 +43,36 @@ public class PaymentController {
     }
 
     @GetMapping(value = "/payment-id/{id}", produces = "application/json")
-    public ResponseEntity<PaymentDto> getPaymentInfo(@PathVariable Long id) {
+    public ResponseEntity<PaymentDto> getPaymentInfo(
+            @PathVariable Long id
+    ) {
         return new ResponseEntity<>(service.getPaymentById(id), HttpStatus.OK);
     }
 
     @PostMapping(value = "/add", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<PaymentDto> addNewPayment(@RequestBody PaymentRequest request) {
+    public ResponseEntity<PaymentDto> addNewPayment(
+            @RequestBody
+            @Parameter(name = "new payment post request", required = true)
+            PaymentRequest request
+    ) {
         return new ResponseEntity<>(service.addPayment(request), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/update/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<PaymentDto> updatePaymentInfo(
-            @PathVariable Long id,
-            @RequestBody PaymentUpdateRequest request
+            @PathVariable
+            Long id,
+            @RequestBody
+            @Parameter(name = "update payment info request", required = true)
+            PaymentUpdateRequest request
     ) {
         return new ResponseEntity<>(service.updatePayment(id, request), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePayment(
+            @PathVariable Long id
+    ) {
         service.deletePayment(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
