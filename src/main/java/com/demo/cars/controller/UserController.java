@@ -2,7 +2,8 @@ package com.demo.cars.controller;
 
 import com.demo.cars.dto.UserDto;
 import com.demo.cars.mapper.UserMapper;
-import com.demo.cars.model.UserRequest;
+import com.demo.cars.model.user.UserRequest;
+import com.demo.cars.model.user.UserResponse;
 import com.demo.cars.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,13 +27,13 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<UserDto> getUserInfo(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    public ResponseEntity<UserResponse> getUserInfo(@PathVariable Long id) {
+        return new ResponseEntity<>(userMapper.dtoToResponse(userService.getUserById(id)), HttpStatus.OK);
     }
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return new ResponseEntity<>(userMapper.dtoToResponse(userService.getAllUsers()), HttpStatus.OK);
     }
 
     @PostMapping(value = "/register", consumes = "application/json")

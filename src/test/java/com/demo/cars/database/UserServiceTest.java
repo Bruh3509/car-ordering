@@ -5,7 +5,7 @@ import com.demo.cars.entity.User;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.exception.UserNotFoundException;
 import com.demo.cars.mapper.UserMapperImpl;
-import com.demo.cars.model.UserRequest;
+import com.demo.cars.model.user.UserRequest;
 import com.demo.cars.repository.UserRepository;
 import com.demo.cars.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,7 +71,7 @@ class UserServiceTest {
         // act
         when(userRepository.findAll())
                 .thenReturn(List.of(user1));
-        when(userMapper.entityToDtoList(List.of(user1)))
+        when(userMapper.entityToDto(List.of(user1)))
                 .thenReturn(List.of(user1Dto));
         var user = userService.getAllUsers();
 
@@ -295,6 +295,14 @@ class UserServiceTest {
         // act
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(userEntity));
+        when(userRepository.existsByEmailAndIdNot(user.email(), userEntity.getId()))
+                .thenReturn(false);
+        when(userRepository.existsByPhoneNumberAndIdNot(user.phoneNumber(), userEntity.getId()))
+                .thenReturn(false);
+        when(userRepository.existsByPassportIdAndIdNot(user.passportId(), userEntity.getId()))
+                .thenReturn(false);
+        when(userRepository.existsByDrivingLicenseIdAndIdNot(user.drivingLicenseId(), userEntity.getId()))
+                .thenReturn(false);
         when(userRepository.save(userEntity))
                 .thenReturn(userEntity);
         when(userMapper.entityToDto(userEntity))

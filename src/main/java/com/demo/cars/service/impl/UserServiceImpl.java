@@ -4,7 +4,7 @@ import com.demo.cars.dto.UserDto;
 import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.exception.UserNotFoundException;
 import com.demo.cars.mapper.UserMapper;
-import com.demo.cars.model.UserRequest;
+import com.demo.cars.model.user.UserRequest;
 import com.demo.cars.repository.UserRepository;
 import com.demo.cars.service.UserService;
 import jakarta.transaction.Transactional;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userMapper.entityToDtoList(userRepository.findAll());
+        return userMapper.entityToDto(userRepository.findAll());
     }
 
     @Override
