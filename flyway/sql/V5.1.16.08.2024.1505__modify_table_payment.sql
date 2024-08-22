@@ -1,0 +1,1 @@
+ALTER TABLE payment MODIFY payment_date TIMESTAMP;

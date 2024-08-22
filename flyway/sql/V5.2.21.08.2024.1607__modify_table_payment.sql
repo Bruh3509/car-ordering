@@ -1,0 +1,1 @@
+ALTER TABLE payment MODIFY payment_amount NUMERIC;
