@@ -1,6 +1,7 @@
 package com.demo.cars.database;
 
 import com.demo.cars.dto.CarDto;
+import com.demo.cars.dto.PlaceDto;
 import com.demo.cars.entity.Car;
 import com.demo.cars.entity.Place;
 import com.demo.cars.exception.CarNotFoundException;
@@ -8,6 +9,7 @@ import com.demo.cars.exception.UniqueRecordException;
 import com.demo.cars.mapper.CarMapperImpl;
 import com.demo.cars.model.car.CarRequest;
 import com.demo.cars.repository.CarRepository;
+import com.demo.cars.repository.PlaceRepository;
 import com.demo.cars.service.impl.CarServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.demo.cars.util.PropertyUtil.SRID;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -33,6 +34,8 @@ import static org.mockito.Mockito.when;
 class CarServiceTest {
     @Mock
     private CarRepository carRepository;
+    @Mock
+    private PlaceRepository placeRepository;
     @Mock
     private CarMapperImpl carMapper;
     @InjectMocks
@@ -56,6 +59,10 @@ class CarServiceTest {
                 1L,
                 point
         );
+        var placeDto = new PlaceDto(
+                longitude,
+                latitude
+        );
         var carEntity = new Car(
                 1L,
                 place,
@@ -69,7 +76,7 @@ class CarServiceTest {
                 100
         );
         var carDto = new CarDto(
-                place,
+                placeDto,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -104,8 +111,24 @@ class CarServiceTest {
                 1L,
                 point
         );
-        var carDto = new CarDto(
+        var placeDto = new PlaceDto(
+                longitude,
+                latitude
+        );
+        var car = new Car(
+                1L,
                 place,
+                "Sedan",
+                "BMW",
+                "M5 F90",
+                (byte) 4,
+                Year.of(2020),
+                "1234 AM-7",
+                true,
+                100
+        );
+        var carDto = new CarDto(
+                placeDto,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -128,13 +151,17 @@ class CarServiceTest {
         );
 
         // act
+        when(placeRepository.findById(1L))
+                .thenReturn(Optional.of(place));
         when(carRepository.existsByPlateNumber(carDto.getPlateNumber()))
                 .thenReturn(false);
-        when(carMapper.requestToDto(carRequest))
+        when(carRepository.save(car))
+                .thenReturn(car);
+        when(carMapper.entityToDto(car))
                 .thenReturn(carDto);
 
         // assert
-        assertDoesNotThrow(() -> carService.regCar(carRequest));
+        assertEquals(carDto, carService.regCar(carRequest));
     }
 
     @Test
@@ -145,12 +172,12 @@ class CarServiceTest {
         var latitude = 10;
         var point = factory.createPoint(new Coordinate(longitude, latitude));
         point.setSRID(SRID);
-        var place = new Place(
-                1L,
-                point
+        var placeDto = new PlaceDto(
+                longitude,
+                latitude
         );
         var carDto = new CarDto(
-                place,
+                placeDto,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -175,8 +202,6 @@ class CarServiceTest {
         // act
         when(carRepository.existsByPlateNumber(carDto.getPlateNumber()))
                 .thenReturn(true);
-        when(carMapper.requestToDto(carRequest))
-                .thenReturn(carDto);
 
         // assert
         assertThrows(UniqueRecordException.class, () -> carService.regCar(carRequest));
@@ -194,6 +219,10 @@ class CarServiceTest {
                 1L,
                 point
         );
+        var placeDto = new PlaceDto(
+                longitude,
+                latitude
+        );
         var carEntity = new Car(
                 1L,
                 place,
@@ -207,7 +236,7 @@ class CarServiceTest {
                 100
         );
         var carDto = new CarDto(
-                place,
+                placeDto,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -274,6 +303,10 @@ class CarServiceTest {
                 1L,
                 point
         );
+        var placeDto = new PlaceDto(
+                longitude,
+                latitude
+        );
         var carEntity = new Car(
                 1L,
                 place,
@@ -288,7 +321,7 @@ class CarServiceTest {
         );
 
         var carDto = new CarDto(
-                place,
+                placeDto,
                 "Universal",
                 "BMW",
                 "M5 F90",
@@ -319,8 +352,7 @@ class CarServiceTest {
                 .thenReturn(carEntity);
         when(carMapper.entityToDto(carEntity))
                 .thenReturn(carDto);
-        when(carMapper.requestToDto(carRequest))
-                .thenReturn(carDto);
+
         var car = carService.updateCar(carEntity.getId(), carRequest);
 
         // assert
@@ -383,6 +415,10 @@ class CarServiceTest {
                 1L,
                 point
         );
+        var placeDto = new PlaceDto(
+                longitude,
+                latitude
+        );
         var carEntity = new Car(
                 1L,
                 place,
@@ -397,7 +433,7 @@ class CarServiceTest {
         );
 
         var carDto = new CarDto(
-                place,
+                placeDto,
                 "Universal",
                 "BMW",
                 "M5 F90",
@@ -424,8 +460,6 @@ class CarServiceTest {
                 .thenReturn(Optional.of(carEntity));
         when(carRepository.existsByPlateNumberAndIdNot(carDto.getPlateNumber(), carEntity.getId()))
                 .thenReturn(true);
-        when(carMapper.requestToDto(carRequest))
-                .thenReturn(carDto);
 
         // assert
         assertThrows(UniqueRecordException.class, () -> carService.updateCar(1L, carRequest));

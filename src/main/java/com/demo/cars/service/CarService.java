@@ -6,7 +6,7 @@ import com.demo.cars.model.car.CarRequest;
 import java.util.List;
 
 public interface CarService {
-    void regCar(CarRequest carRequest);
+    CarDto regCar(CarRequest carRequest);
 
     List<CarDto> getAllCars();
 

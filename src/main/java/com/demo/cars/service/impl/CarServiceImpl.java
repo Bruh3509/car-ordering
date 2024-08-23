@@ -2,10 +2,13 @@ package com.demo.cars.service.impl;
 
 import com.demo.cars.dto.CarDto;
 import com.demo.cars.exception.CarNotFoundException;
+import com.demo.cars.exception.PlaceNotFoundException;
 import com.demo.cars.exception.UniqueRecordException;
+import com.demo.cars.mapper.CarBuilder;
 import com.demo.cars.mapper.CarMapper;
 import com.demo.cars.model.car.CarRequest;
 import com.demo.cars.repository.CarRepository;
+import com.demo.cars.repository.PlaceRepository;
 import com.demo.cars.service.CarService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -23,15 +26,19 @@ import static com.demo.cars.util.PropertyUtil.PLATE_NUM_EXC;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CarServiceImpl implements CarService {
     CarRepository carRepository;
+    PlaceRepository placeRepository;
     CarMapper carMapper;
 
     @Override
-    public void regCar(CarRequest carRequest) {
-        var carDto = carMapper.requestToDto(carRequest);
+    public CarDto regCar(CarRequest carRequest) {
+        checkUniqueness(carRequest.plateNumber());
 
-        checkUniqueness(carDto.getPlateNumber());
+        var place = placeRepository.findById(carRequest.branchId())
+                .orElseThrow(PlaceNotFoundException::new);
 
-        carRepository.save(carMapper.dtoToEntity(carDto));
+        var car = CarBuilder.buildEntity(place, carRequest);
+
+        return carMapper.entityToDto(carRepository.save(car));
     }
 
     @Override
@@ -50,18 +57,17 @@ public class CarServiceImpl implements CarService {
     public CarDto updateCar(Long id, CarRequest carRequest) {
         var car = carRepository.findById(id)
                 .orElseThrow(CarNotFoundException::new);
-        var carDto = carMapper.requestToDto(carRequest);
 
-        checkUniquenessAndIdNot(id, carDto.getPlateNumber());
+        checkUniquenessAndIdNot(id, carRequest.plateNumber());
 
-        car.setCarClass(carDto.getCarClass());
-        car.setBrand(carDto.getBrand());
-        car.setModel(carDto.getModel());
-        car.setNumberOfSeats(carDto.getNumberOfSeats());
-        car.setYearOfProduction(carDto.getYearOfProduction());
-        car.setPlateNumber(carDto.getPlateNumber());
-        car.setIsAvailable(carDto.getIsAvailable());
-        car.setDailyFee(carDto.getDailyFee());
+        car.setCarClass(carRequest.carClass());
+        car.setBrand(carRequest.brand());
+        car.setModel(carRequest.model());
+        car.setNumberOfSeats(carRequest.numberOfSeats());
+        car.setYearOfProduction(carRequest.yearOfProduction());
+        car.setPlateNumber(carRequest.plateNumber());
+        car.setIsAvailable(carRequest.isAvailable());
+        car.setDailyFee(carRequest.dailyFee());
 
         return carMapper.entityToDto(carRepository.save(car));
     }

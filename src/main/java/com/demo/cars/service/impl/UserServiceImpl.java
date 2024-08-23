@@ -29,12 +29,16 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Override
-    public void regUser(UserRequest userRequest) {
+    public UserDto regUser(UserRequest userRequest) {
         var userDto = userMapper.requestToDto(userRequest);
 
         checkUniqueness(userDto);
 
-        userRepository.save(userMapper.dtoToEntity(userDto));
+        return userMapper.entityToDto(
+                userRepository.save(
+                        userMapper.dtoToEntity(userDto)
+                )
+        );
     }
 
     @Override

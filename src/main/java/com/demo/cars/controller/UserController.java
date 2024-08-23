@@ -5,7 +5,9 @@ import com.demo.cars.mapper.UserMapper;
 import com.demo.cars.model.user.UserRequest;
 import com.demo.cars.model.user.UserResponse;
 import com.demo.cars.service.UserService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,9 +24,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-    private final UserService userService;
-    private final UserMapper userMapper;
+    UserService userService;
+    UserMapper userMapper;
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<UserResponse> getUserInfo(@PathVariable Long id) {
@@ -37,9 +40,8 @@ public class UserController {
     }
 
     @PostMapping(value = "/register", consumes = "application/json")
-    public ResponseEntity<Void> regNewUser(@RequestBody UserRequest request) {
-        userService.regUser(request);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<UserDto> regNewUser(@RequestBody UserRequest request) {
+        return new ResponseEntity<>(userService.regUser(request), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "{id}/update", consumes = "application/json", produces = "application/json")

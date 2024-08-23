@@ -10,7 +10,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.locationtech.jts.geom.Point;
 
@@ -18,6 +20,8 @@ import org.locationtech.jts.geom.Point;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode(doNotUseGetters = true, onlyExplicitlyIncluded = true, callSuper = false)
+@ToString(doNotUseGetters = true, onlyExplicitlyIncluded = true)
 public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
