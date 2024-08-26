@@ -13,6 +13,7 @@ import java.time.Year;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CarDto {
+    PlaceDto placeDto;
     String carClass;
     String brand;
     String model;

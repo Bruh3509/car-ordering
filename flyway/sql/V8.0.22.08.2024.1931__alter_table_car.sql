@@ -1,0 +1,3 @@
+ALTER TABLE car
+ADD COLUMN branch_id BIGINT,
+ADD FOREIGN KEY (branch_id) REFERENCES place(id);

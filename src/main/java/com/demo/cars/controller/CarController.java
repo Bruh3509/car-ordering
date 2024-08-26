@@ -39,9 +39,8 @@ public class CarController {
     }
 
     @PostMapping(value = "/register", consumes = "application/json")
-    public ResponseEntity<Void> regNewCar(@RequestBody CarRequest request) {
-        carService.regCar(request);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<CarDto> regNewCar(@RequestBody CarRequest request) {
+        return new ResponseEntity<>(carService.regCar(request), HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/{id}/update", consumes = "application/json", produces = "application/json")

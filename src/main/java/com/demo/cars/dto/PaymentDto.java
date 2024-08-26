@@ -12,8 +12,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentDto {
     Long userId;
-    Long sessionId; // ? - do we need these field
-    String status; // ? - the same
+    Long sessionId;
+    String status;
     String url;
     Integer paymentAmount;
     String type;
