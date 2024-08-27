@@ -1,27 +1,58 @@
 package com.demo.cars.service.impl;
 
 import com.demo.cars.dto.PaymentDto;
+import com.demo.cars.exception.MyStripeException;
 import com.demo.cars.exception.PaymentNotFoundException;
 import com.demo.cars.mapper.PaymentMapper;
 import com.demo.cars.model.payment.PaymentRequest;
 import com.demo.cars.model.payment.PaymentUpdateRequest;
 import com.demo.cars.repository.PaymentRepository;
 import com.demo.cars.service.PaymentService;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentServiceImpl implements PaymentService {
-    PaymentRepository repository;
-    PaymentMapper mapper;
+    @Value("${stripe.test.private-key}")
+    String prKey;
+    final PaymentRepository repository;
+    final PaymentMapper mapper;
+
+    @PostConstruct
+    private void postConstruct() {
+        Stripe.apiKey = prKey;
+    }
+
+    @Override
+    public PaymentIntent createPaymentIntent(PaymentRequest request) {
+        var paymentMethodTypes = List.of("card");
+
+        Map<String, Object> params = Map.of(
+                "amount", request.paymentAmount(),
+                "currency", request.type(),
+                "payment_method_types", paymentMethodTypes
+        );
+
+        try {
+            return PaymentIntent.create(params);
+        } catch (StripeException e) {
+            throw new MyStripeException(e.getMessage());
+        }
+    }
 
     @Override
     public PaymentDto addPayment(PaymentRequest request) {
