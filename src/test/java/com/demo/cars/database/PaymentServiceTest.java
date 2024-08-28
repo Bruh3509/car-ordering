@@ -3,7 +3,7 @@ package com.demo.cars.database;
 import com.demo.cars.dto.PaymentDto;
 import com.demo.cars.entity.Payment;
 import com.demo.cars.entity.User;
-import com.demo.cars.exception.PaymentNotFoundException;
+import com.demo.cars.exception.payment.PaymentNotFoundException;
 import com.demo.cars.mapper.PaymentMapperImpl;
 import com.demo.cars.model.payment.PaymentRequest;
 import com.demo.cars.model.payment.PaymentUpdateRequest;
@@ -58,7 +58,7 @@ class PaymentServiceTest {
         var payment = new Payment(
                 1L,
                 user,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -67,7 +67,7 @@ class PaymentServiceTest {
         );
         var paymentDto = new PaymentDto(
                 1L,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -83,7 +83,7 @@ class PaymentServiceTest {
 
         // assert
         assertEquals(1, payments.size());
-        assertEquals(1234L, payments.getFirst().getSessionId());
+        assertEquals(String.valueOf(1234), payments.getFirst().getSessionId());
     }
 
     @Test
@@ -102,7 +102,7 @@ class PaymentServiceTest {
         var payment = new Payment(
                 1L,
                 user,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -111,7 +111,7 @@ class PaymentServiceTest {
         );
         var paymentReq = new PaymentRequest(
                 1L,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -119,7 +119,7 @@ class PaymentServiceTest {
         );
         var paymentDto = new PaymentDto(
                 1L,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -155,7 +155,7 @@ class PaymentServiceTest {
         var payment = new Payment(
                 1L,
                 user,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -164,7 +164,7 @@ class PaymentServiceTest {
         );
         var paymentDto = new PaymentDto(
                 1L,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -198,7 +198,7 @@ class PaymentServiceTest {
         var payment = new Payment(
                 1L,
                 user,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -207,7 +207,7 @@ class PaymentServiceTest {
         );
         var paymentDto = new PaymentDto(
                 1L,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -261,7 +261,7 @@ class PaymentServiceTest {
         var payment = new Payment(
                 1L,
                 user,
-                1234L,
+                String.valueOf(1234),
                 "DONE",
                 "http://localhost",
                 100,
@@ -276,7 +276,7 @@ class PaymentServiceTest {
         );
         var paymentDto = new PaymentDto(
                 1L,
-                1234L,
+                String.valueOf(1234),
                 "INCOMPLETE",
                 "http://localhost",
                 200,

@@ -1,0 +1,1 @@
+ALTER TABLE payment MODIFY url VARCHAR(510);

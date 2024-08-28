@@ -14,8 +14,7 @@ public final class PropertyUtil {
     public static final String PLATE_NUM_EXC = "plate number unique exception";
 
     // Stripe
-    public static final String STRIPE_PAYMENT_INTENT_SUCCESS = "payment_intent.succeeded";
-    public static final String STRIPE_PAYMENT_INTENT_FAIL = "payment_intent.payment_failed";
+    public static final String PAYMENT_SUCCESS_URL = "http://localhost:8080/payment";
 
     private PropertyUtil() {
     }

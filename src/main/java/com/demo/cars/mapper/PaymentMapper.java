@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", imports = {java.sql.Timestamp.class, java.time.Instant.class})
 public interface PaymentMapper {
-    PaymentDto requestToDto(PaymentRequest request);
+    PaymentRequest dtoToRequest(PaymentDto dto);
 
     @Mapping(target = "userId", source = "user.id")
     PaymentDto entityToDto(Payment entity);
