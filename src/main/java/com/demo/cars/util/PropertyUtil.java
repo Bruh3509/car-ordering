@@ -13,9 +13,6 @@ public final class PropertyUtil {
     // Car
     public static final String PLATE_NUM_EXC = "plate number unique exception";
 
-    // Stripe
-    public static final String PAYMENT_SUCCESS_URL = "http://localhost:8080/payment";
-
     private PropertyUtil() {
     }
 }

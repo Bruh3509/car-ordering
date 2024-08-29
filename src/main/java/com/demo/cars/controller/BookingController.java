@@ -65,7 +65,7 @@ public class BookingController {
         return new ResponseEntity<>(service.addNewRide(request), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/update/{id}", produces = "application/json", consumes = "application/json")
+    @PatchMapping(value = "/finish/{id}", produces = "application/json", consumes = "application/json")
     public ResponseEntity<BookingDto> updateBookInfo(
             @PathVariable long id,
             @RequestBody BookingUpdateRequest request

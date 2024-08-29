@@ -4,6 +4,8 @@ import com.demo.cars.dto.PaymentDto;
 import com.demo.cars.exception.MyStripeException;
 import com.demo.cars.mapper.PaymentMapper;
 import com.demo.cars.model.payment.StripePaymentRequest;
+import com.demo.cars.service.BookingService;
+import com.demo.cars.service.CarService;
 import com.demo.cars.service.PaymentService;
 import com.demo.cars.service.StripeService;
 import com.demo.cars.util.enums.Status;
@@ -19,6 +21,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -28,8 +32,10 @@ public class StripeServiceImpl implements StripeService {
     @Value("${stripe.test.payment-url}")
     String paymentUrl;
 
-    final PaymentMapper mapper;
-    final PaymentService service;
+    final PaymentMapper paymentMapper;
+    final PaymentService paymentService;
+    final BookingService bookingService;
+    final CarService carService;
 
     @PostConstruct
     private void postConstruct() {
@@ -52,7 +58,7 @@ public class StripeServiceImpl implements StripeService {
                 Type.DEFAULT.name()
         );
 
-        return service.addPayment(mapper.dtoToRequest(paymentDto));
+        return paymentService.addPayment(paymentMapper.dtoToRequest(paymentDto));
     }
 
     private Session createSession(StripePaymentRequest request) {
@@ -71,10 +77,13 @@ public class StripeServiceImpl implements StripeService {
                                             .setPriceData(
                                                     SessionCreateParams.LineItem.PriceData.builder()
                                                             .setCurrency(request.currency())
-                                                            .setUnitAmount(request.paymentAmount())
-                                                            .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                                    .setName("Car")
-                                                                    .build()
+                                                            .setUnitAmount(countOverallPrice(
+                                                                    request.userId())
+                                                            )
+                                                            .setProductData(
+                                                                    SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                                            .setName("Car")
+                                                                            .build()
                                                             )
                                                             .build()
                                             )
@@ -86,5 +95,21 @@ public class StripeServiceImpl implements StripeService {
         } catch (StripeException e) {
             throw new MyStripeException(e.getMessage());
         }
+    }
+
+    private long countOverallPrice(long userId) {
+        // total += minutes of ride * fee
+        return bookingService.getAllUserRidesByStatus(userId, Status.COMPLETE.name()).stream()
+                .mapToLong(bookingDto ->
+                        Duration.between(
+                                        bookingDto.getStartDate().toInstant(),
+                                        bookingDto.getEndDate().toInstant()
+                                )
+                                .toMinutes()
+                                *
+                                carService.getCarById(bookingDto.getCarId())
+                                        .getDailyFee()
+                )
+                .sum();
     }
 }

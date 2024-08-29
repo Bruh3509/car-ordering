@@ -15,7 +15,7 @@ public interface PaymentService {
 
     PaymentDto getPaymentById(Long id);
 
-    PaymentDto confirmSuccess(String sessionId);
+    long confirmSuccess(String sessionId);
 
     PaymentDto updatePayment(Long id, PaymentUpdateRequest request);
 

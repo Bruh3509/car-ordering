@@ -3,6 +3,7 @@ package com.demo.cars.controller;
 import com.demo.cars.dto.PaymentDto;
 import com.demo.cars.model.payment.PaymentUpdateRequest;
 import com.demo.cars.model.payment.StripePaymentRequest;
+import com.demo.cars.service.BookingService;
 import com.demo.cars.service.PaymentService;
 import com.demo.cars.service.StripeService;
 import lombok.AccessLevel;
@@ -28,6 +29,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaymentController {
     PaymentService paymentService;
+    BookingService bookingService;
     StripeService stripeService;
 
     @GetMapping(value = "/user-id/{id}", produces = "application/json")
@@ -47,8 +49,9 @@ public class PaymentController {
 
     @GetMapping(value = "/success")
     public ResponseEntity<String> paymentSuccess(@RequestParam("session_id") String sessionId) {
-        var res = paymentService.confirmSuccess(sessionId);
-        return new ResponseEntity<>("Payment succeeded.\n" + res.toString(), HttpStatus.OK);
+        var userId = paymentService.confirmSuccess(sessionId);
+        bookingService.updateRidesStatus(userId);
+        return new ResponseEntity<>("Payment succeeded.\n", HttpStatus.OK);
     }
 
     @GetMapping(value = "/cancel")

@@ -356,7 +356,6 @@ class BookingServiceTest {
                 "ACTIVE"
         );
         var request = new BookingUpdateRequest(
-                Timestamp.from(Instant.now()),
                 Timestamp.from(Instant.MIN),
                 "ACTIVE"
         );
@@ -392,7 +391,6 @@ class BookingServiceTest {
     void testUpdateRideStatusNotFound() {
         // arrange
         var request = new BookingUpdateRequest(
-                Timestamp.from(Instant.now()),
                 Timestamp.from(Instant.MIN),
                 "ACTIVE"
         );
