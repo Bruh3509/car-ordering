@@ -110,6 +110,6 @@ public class StripeServiceImpl implements StripeService {
                                 carService.getCarById(bookingDto.getCarId())
                                         .getDailyFee()
                 )
-                .sum();
+                .sum() * 100; // cause unitAmount is in cents
     }
 }

@@ -4,6 +4,7 @@ import com.demo.cars.dto.BookingDto;
 import com.demo.cars.model.booking.BookingPostRequest;
 import com.demo.cars.model.booking.BookingUpdateRequest;
 import com.demo.cars.service.BookingService;
+import com.demo.cars.util.enums.Status;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -65,12 +68,15 @@ public class BookingController {
         return new ResponseEntity<>(service.addNewRide(request), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/finish/{id}", produces = "application/json", consumes = "application/json")
+    @PatchMapping(value = "/finish/{id}", produces = "application/json")
     public ResponseEntity<BookingDto> updateBookInfo(
-            @PathVariable long id,
-            @RequestBody BookingUpdateRequest request
+            @PathVariable long id
     ) {
-        return new ResponseEntity<>(service.updateRideStatus(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(service.updateRideStatus(
+                id,
+                new BookingUpdateRequest(Timestamp.from(Instant.now()), Status.COMPLETE.name())
+        ),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
