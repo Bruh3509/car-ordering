@@ -1,11 +1,17 @@
 package com.demo.cars.controller;
 
 import com.demo.cars.dto.BookingDto;
+import com.demo.cars.model.ErrorResponse;
 import com.demo.cars.model.booking.BookingPostRequest;
 import com.demo.cars.model.booking.BookingUpdateRequest;
 import com.demo.cars.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +33,33 @@ import java.util.List;
 @RestController
 @RequestMapping("/booking")
 @Tag(name = "booking-controller", description = "managing booking logic")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "400", description = "Bad Request",
+                content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                        mediaType = "application/json")),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                        mediaType = "application/json"))
+})
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class BookingController {
     BookingService service;
 
     @GetMapping(produces = "application/json")
-    @Operation(summary = "get all records", description = "lists whole booking history")
+    @Operation(summary = "get all records", description = "lists whole booking history",
+            responses = @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = BookingDto.class)),
+                            mediaType = "application/json")))
     public ResponseEntity<List<BookingDto>> getAllBookRecords() {
         return new ResponseEntity<>(service.getAllRides(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    @Operation(summary = "get by id", description = "gets booking record by its id")
+    @Operation(summary = "get by id", description = "gets booking record by its id",
+            responses = @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = BookingDto.class),
+                            mediaType = "application/json")))
     public ResponseEntity<BookingDto> getBookRecordById(
             @PathVariable long id
     ) {
@@ -64,7 +84,10 @@ public class BookingController {
 
     @GetMapping(value = "/car-id/{carId}", produces = "application/json")
     @Operation(summary = "get by car and status",
-            description = "lists all booking records with specified car and status")
+            description = "lists all booking records with specified car and status",
+            responses = @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = BookingDto.class)),
+                            mediaType = "application/json")))
     public ResponseEntity<List<BookingDto>> getBooksByCarIdAndStatus(
             @PathVariable
             long carId,
@@ -79,8 +102,10 @@ public class BookingController {
     }
 
     @PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
-    @Operation(summary = "add new",
-            description = "register new booking record")
+    @Operation(summary = "add new", description = "register new booking record",
+            responses = @ApiResponse(responseCode = "201", description = "Created",
+                    content = @Content(schema = @Schema(implementation = BookingDto.class),
+                            mediaType = "application/json")))
     public ResponseEntity<BookingDto> registerNewBook(
             @RequestBody
             @Parameter(name = "new reservation post request", required = true)
@@ -90,8 +115,10 @@ public class BookingController {
     }
 
     @PatchMapping(value = "/update/{id}", produces = "application/json", consumes = "application/json")
-    @Operation(summary = "update info",
-            description = "update booking record info by id")
+    @Operation(summary = "update info", description = "update booking record info by id",
+            responses = @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = BookingDto.class),
+                            mediaType = "application/json")))
     public ResponseEntity<BookingDto> updateBookInfo(
             @PathVariable
             long id,
@@ -103,7 +130,8 @@ public class BookingController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "delete", description = "delete booking record")
+    @Operation(summary = "delete", description = "delete booking record",
+            responses = @ApiResponse(responseCode = "204", description = "No Content"))
     public ResponseEntity<Void> deleteBookRecord(
             @PathVariable long id
     ) {
