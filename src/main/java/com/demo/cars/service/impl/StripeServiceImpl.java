@@ -108,7 +108,7 @@ public class StripeServiceImpl implements StripeService {
                                 .toMinutes()
                                 *
                                 carService.getCarById(bookingDto.getCarId())
-                                        .getDailyFee()
+                                        .getMinuteFee()
                 )
                 .sum() * 100; // cause unitAmount is in cents
     }
