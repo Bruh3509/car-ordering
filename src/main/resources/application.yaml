@@ -1,6 +1,9 @@
 spring:
   application:
-    name: cars
+    name: car-ordering
+  cloud:
+    config:
+      enabled: false
   flyway:
     enabled: false
   jpa:
@@ -15,6 +18,13 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
 
 springdoc:
   api-docs:
