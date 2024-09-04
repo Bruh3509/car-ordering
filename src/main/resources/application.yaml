@@ -4,6 +4,8 @@ spring:
   cloud:
     config:
       enabled: false
+  jmx:
+    port: 9003
   flyway:
     enabled: false
   jpa:
