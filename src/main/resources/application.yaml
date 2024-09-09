@@ -16,6 +16,12 @@ spring:
     ansi:
       enabled: ALWAYS
 
+stripe:
+  test:
+    private-key: ${STRIPE_PRIVATE_KEY_TEST}
+    payment-url: ${STRIPE_PAYMENT_URL}
+    webhook-key: ${STRIPE_WEBHOOK_KEY}
+
 springdoc:
   api-docs:
     path: /api-docs

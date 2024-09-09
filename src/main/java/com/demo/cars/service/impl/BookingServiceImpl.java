@@ -7,6 +7,7 @@ import com.demo.cars.model.booking.BookingPostRequest;
 import com.demo.cars.model.booking.BookingUpdateRequest;
 import com.demo.cars.repository.BookingRepository;
 import com.demo.cars.service.BookingService;
+import com.demo.cars.util.enums.Status;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -77,13 +78,23 @@ public class BookingServiceImpl implements BookingService {
         var booking = repository.findById(id)
                 .orElseThrow(BookingNotFoundException::new);
 
-        booking.setStartDate(request.startDate());
         booking.setEndDate(request.endDate());
         booking.setStatus(request.status());
 
         return mapper.entityToDto(
                 repository.save(booking)
         );
+    }
+
+    @Override
+    public long updateRidesStatus(long userId) {
+        var rides = repository.findByUserIdAndStatus(userId, Status.COMPLETE.name());
+
+        for (var ride : rides)
+            ride.setStatus(Status.PAYED.name());
+
+        repository.saveAll(rides);
+        return 0;
     }
 
     @Override

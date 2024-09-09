@@ -5,6 +5,7 @@ import com.demo.cars.model.ErrorResponse;
 import com.demo.cars.model.booking.BookingPostRequest;
 import com.demo.cars.model.booking.BookingUpdateRequest;
 import com.demo.cars.service.BookingService;
+import com.demo.cars.util.enums.Status;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -126,7 +129,11 @@ public class BookingController {
             @Parameter(name = "update reservation info request", required = true)
             BookingUpdateRequest request
     ) {
-        return new ResponseEntity<>(service.updateRideStatus(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(service.updateRideStatus(
+                id,
+                new BookingUpdateRequest(Timestamp.from(Instant.now()), Status.COMPLETE.name())
+        ),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

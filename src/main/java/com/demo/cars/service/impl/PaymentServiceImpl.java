@@ -1,18 +1,22 @@
 package com.demo.cars.service.impl;
 
 import com.demo.cars.dto.PaymentDto;
-import com.demo.cars.exception.PaymentNotFoundException;
+import com.demo.cars.exception.payment.BadPaymentSessionException;
+import com.demo.cars.exception.payment.PaymentNotFoundException;
 import com.demo.cars.mapper.PaymentMapper;
 import com.demo.cars.model.payment.PaymentRequest;
 import com.demo.cars.model.payment.PaymentUpdateRequest;
 import com.demo.cars.repository.PaymentRepository;
 import com.demo.cars.service.PaymentService;
+import com.demo.cars.util.enums.Status;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -42,6 +46,20 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public List<PaymentDto> getPaymentsByUserId(Long userId) {
         return mapper.entityToDto(repository.findByUserId(userId));
+    }
+
+    @Override
+    public long confirmSuccess(String sessionId) {
+        var payment = repository.findBySessionId(sessionId)
+                .orElseThrow(PaymentNotFoundException::new);
+
+        if (payment.getStatus().equals(Status.COMPLETE.name()))
+            throw new BadPaymentSessionException();
+
+        payment.setPaymentDate(Timestamp.from(Instant.now()));
+        payment.setStatus(Status.COMPLETE.name());
+
+        return repository.save(payment).getUser().getId();
     }
 
     @Override

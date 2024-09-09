@@ -4,7 +4,10 @@ import com.demo.cars.dto.PaymentDto;
 import com.demo.cars.model.ErrorResponse;
 import com.demo.cars.model.payment.PaymentRequest;
 import com.demo.cars.model.payment.PaymentUpdateRequest;
+import com.demo.cars.model.payment.StripePaymentRequest;
+import com.demo.cars.service.BookingService;
 import com.demo.cars.service.PaymentService;
+import com.demo.cars.service.StripeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -43,7 +47,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaymentController {
-    PaymentService service;
+    PaymentService paymentService;
+    BookingService bookingService;
+    StripeService stripeService;
 
     @GetMapping(value = "/user-id/{id}", produces = "application/json")
     @Operation(summary = "get user payments", description = "lists all user's payments",
@@ -62,7 +68,7 @@ public class PaymentController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = PaymentDto.class)),
                             mediaType = "application/json")))
     public ResponseEntity<List<PaymentDto>> getAllPaymentsInfo() {
-        return new ResponseEntity<>(service.getAllPayments(), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.getAllPayments(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/payment-id/{id}", produces = "application/json")
@@ -101,7 +107,7 @@ public class PaymentController {
             @Parameter(name = "update payment info request", required = true)
             PaymentUpdateRequest request
     ) {
-        return new ResponseEntity<>(service.updatePayment(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.updatePayment(id, request), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
