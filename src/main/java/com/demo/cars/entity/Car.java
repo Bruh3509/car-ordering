@@ -6,10 +6,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Year;
@@ -20,10 +24,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode(doNotUseGetters = true, onlyExplicitlyIncluded = true, callSuper = false)
+@ToString(doNotUseGetters = true, onlyExplicitlyIncluded = true)
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @OneToOne
+    @JoinColumn(name = "branch_id")
+    Place place;
 
     String carClass;
     String brand;
@@ -42,6 +52,7 @@ public class Car {
 
     public Car(
             Long id,
+            Place place,
             String carClass,
             String brand,
             String model,
@@ -52,6 +63,7 @@ public class Car {
             Integer dailyFee
     ) {
         this.id = id;
+        this.place = place;
         this.carClass = carClass;
         this.brand = brand;
         this.model = model;

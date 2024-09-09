@@ -6,7 +6,7 @@ import com.demo.cars.model.user.UserRequest;
 import java.util.List;
 
 public interface UserService {
-    void regUser(UserRequest userDto);
+    UserDto regUser(UserRequest userRequest);
 
     List<UserDto> getAllUsers();
 

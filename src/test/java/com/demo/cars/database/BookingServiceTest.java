@@ -3,6 +3,7 @@ package com.demo.cars.database;
 import com.demo.cars.dto.BookingDto;
 import com.demo.cars.entity.Booking;
 import com.demo.cars.entity.Car;
+import com.demo.cars.entity.Place;
 import com.demo.cars.entity.User;
 import com.demo.cars.exception.BookingNotFoundException;
 import com.demo.cars.mapper.BookingMapper;
@@ -13,6 +14,8 @@ import com.demo.cars.service.impl.BookingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -24,6 +27,7 @@ import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
+import static com.demo.cars.util.PropertyUtil.SRID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,6 +52,15 @@ class BookingServiceTest {
     @Test
     void testAddNewRide() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var user = new User(
                 1L,
                 "Petya",
@@ -60,6 +73,7 @@ class BookingServiceTest {
         );
         var car = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -106,6 +120,15 @@ class BookingServiceTest {
     @Test
     void testGetAllRides() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var user = new User(
                 1L,
                 "Petya",
@@ -118,6 +141,7 @@ class BookingServiceTest {
         );
         var car = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -159,6 +183,15 @@ class BookingServiceTest {
     @Test
     void testGetRideById() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var user = new User(
                 1L,
                 "Petya",
@@ -171,6 +204,7 @@ class BookingServiceTest {
         );
         var car = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -219,6 +253,15 @@ class BookingServiceTest {
     @Test
     void testGetAllUserRidesByStatus() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var user = new User(
                 1L,
                 "Petya",
@@ -231,6 +274,7 @@ class BookingServiceTest {
         );
         var car = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -272,6 +316,15 @@ class BookingServiceTest {
     @Test
     void testUpdateRideStatus() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var user = new User(
                 1L,
                 "Petya",
@@ -284,6 +337,7 @@ class BookingServiceTest {
         );
         var car = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -355,6 +409,15 @@ class BookingServiceTest {
     @Test
     void testGetCarRideHistory() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var user = new User(
                 1L,
                 "Petya",
@@ -367,6 +430,7 @@ class BookingServiceTest {
         );
         var car = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
@@ -408,6 +472,15 @@ class BookingServiceTest {
     @Test
     void testGetCarRidesByStatus() {
         // arrange
+        GeometryFactory factory = new GeometryFactory();
+        var longitude = 10;
+        var latitude = 10;
+        var point = factory.createPoint(new Coordinate(longitude, latitude));
+        point.setSRID(SRID);
+        var place = new Place(
+                1L,
+                point
+        );
         var user = new User(
                 1L,
                 "Petya",
@@ -420,6 +493,7 @@ class BookingServiceTest {
         );
         var car = new Car(
                 1L,
+                place,
                 "Sedan",
                 "BMW",
                 "M5 F90",
