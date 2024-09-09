@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentDto {
     Long userId;
-    Long sessionId;
+    String sessionId;
     String status;
     String url;
     Integer paymentAmount;

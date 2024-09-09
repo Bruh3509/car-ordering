@@ -45,7 +45,7 @@ public class Car {
     String plateNumber;
 
     Boolean isAvailable;
-    Integer dailyFee;
+    Integer minuteFee;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     List<Booking> booking = new ArrayList<>();
@@ -60,7 +60,7 @@ public class Car {
             Year yearOfProduction,
             String plateNumber,
             Boolean isAvailable,
-            Integer dailyFee
+            Integer minuteFee
     ) {
         this.id = id;
         this.place = place;
@@ -71,6 +71,6 @@ public class Car {
         this.yearOfProduction = yearOfProduction;
         this.plateNumber = plateNumber;
         this.isAvailable = isAvailable;
-        this.dailyFee = dailyFee;
+        this.minuteFee = minuteFee;
     }
 }

@@ -16,7 +16,7 @@ public class CarBuilder {
         car.setYearOfProduction(request.yearOfProduction());
         car.setPlateNumber(request.plateNumber());
         car.setIsAvailable(request.isAvailable());
-        car.setDailyFee(request.dailyFee());
+        car.setMinuteFee(request.minuteFee());
 
         return car;
     }

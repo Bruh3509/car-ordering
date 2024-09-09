@@ -11,6 +11,6 @@ public record CarRequest(
         Year yearOfProduction,
         String plateNumber,
         Boolean isAvailable,
-        Integer dailyFee
+        Integer minuteFee
 ) {
 }

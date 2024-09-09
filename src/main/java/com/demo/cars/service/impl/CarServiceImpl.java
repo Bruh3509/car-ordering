@@ -67,7 +67,7 @@ public class CarServiceImpl implements CarService {
         car.setYearOfProduction(carRequest.yearOfProduction());
         car.setPlateNumber(carRequest.plateNumber());
         car.setIsAvailable(carRequest.isAvailable());
-        car.setDailyFee(carRequest.dailyFee());
+        car.setMinuteFee(carRequest.minuteFee());
 
         return carMapper.entityToDto(carRepository.save(car));
     }
