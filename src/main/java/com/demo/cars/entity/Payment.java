@@ -32,7 +32,7 @@ public class Payment {
     @JoinColumn(name = "user_id")
     User user;
 
-    Long sessionId;
+    String sessionId;
     String status;
     String url;
     Integer paymentAmount;

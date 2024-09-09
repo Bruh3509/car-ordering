@@ -23,5 +23,7 @@ public interface BookingService {
 
     BookingDto updateRideStatus(long id, BookingUpdateRequest request);
 
+    long updateRidesStatus(long userId);
+
     void deleteRide(long id);
 }
