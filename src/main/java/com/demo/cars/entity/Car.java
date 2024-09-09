@@ -45,6 +45,7 @@ public class Car {
     String plateNumber;
 
     Boolean isAvailable;
+    @Column(name = "daily_fee")
     Integer minuteFee;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)

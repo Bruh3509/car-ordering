@@ -79,6 +79,7 @@ public class UserController {
     ) {
         userService.regUser(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
     @PatchMapping(value = "{id}/update", consumes = "application/json", produces = "application/json")
     @Operation(summary = "update user", description = "updates user info",
