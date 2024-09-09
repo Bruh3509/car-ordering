@@ -1,6 +1,11 @@
 spring:
   application:
-    name: cars
+    name: car-ordering
+  cloud:
+    config:
+      enabled: false
+  jmx:
+    enabled: false
   flyway:
     enabled: false
   jpa:
@@ -16,6 +21,15 @@ spring:
     ansi:
       enabled: ALWAYS
 
+server:
+  port: 8080
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
 stripe:
   test:
     private-key: ${STRIPE_PRIVATE_KEY_TEST}
