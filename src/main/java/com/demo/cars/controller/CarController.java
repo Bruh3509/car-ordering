@@ -1,7 +1,6 @@
 package com.demo.cars.controller;
 
 import com.demo.cars.dto.CarDto;
-import com.demo.cars.mapper.CarMapper;
 import com.demo.cars.model.ErrorResponse;
 import com.demo.cars.model.car.CarRequest;
 import com.demo.cars.service.CarService;
@@ -44,7 +43,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CarController {
     CarService carService;
-    CarMapper carMapper;
 
     @GetMapping(value = "/{id}", produces = "application/json")
     @Operation(summary = "get car info", description = "get car info by its id",
@@ -78,6 +76,7 @@ public class CarController {
     ) {
         carService.regCar(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
 
     @PatchMapping(value = "/{id}/update", consumes = "application/json", produces = "application/json")

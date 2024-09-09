@@ -2,14 +2,12 @@ package com.demo.cars.controller;
 
 import com.demo.cars.dto.PaymentDto;
 import com.demo.cars.model.ErrorResponse;
-import com.demo.cars.model.payment.PaymentRequest;
 import com.demo.cars.model.payment.PaymentUpdateRequest;
 import com.demo.cars.model.payment.StripePaymentRequest;
 import com.demo.cars.service.BookingService;
 import com.demo.cars.service.PaymentService;
 import com.demo.cars.service.StripeService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,7 +57,7 @@ public class PaymentController {
     public ResponseEntity<List<PaymentDto>> getPaymentsInfoByUser(
             @PathVariable Long id
     ) {
-        return new ResponseEntity<>(service.getPaymentsByUserId(id), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.getPaymentsByUserId(id), HttpStatus.OK);
     }
 
     @GetMapping(produces = "application/json")
@@ -79,20 +77,29 @@ public class PaymentController {
     public ResponseEntity<PaymentDto> getPaymentInfo(
             @PathVariable Long id
     ) {
-        return new ResponseEntity<>(service.getPaymentById(id), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.getPaymentById(id), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/add", produces = "application/json", consumes = "application/json")
+    @GetMapping(value = "/success")
+    public ResponseEntity<String> paymentSuccess(@RequestParam("session_id") String sessionId) {
+        var userId = paymentService.confirmSuccess(sessionId);
+        bookingService.updateRidesStatus(userId);
+        return new ResponseEntity<>("Payment succeeded.\n", HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/cancel")
+    public ResponseEntity<String> paymentCancel() {
+        return new ResponseEntity<>("Payment has been canceled.", HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/add", consumes = "application/json")
     @Operation(summary = "add payment", description = "creates new Stripe payment session",
             responses = @ApiResponse(responseCode = "201", description = "Created",
                     content = @Content(schema = @Schema(implementation = PaymentDto.class),
                             mediaType = "application/json")))
-    public ResponseEntity<PaymentDto> addNewPayment(
-            @RequestBody
-            @Parameter(name = "new payment post request", required = true)
-            PaymentRequest request
-    ) {
-        return new ResponseEntity<>(service.addPayment(request), HttpStatus.CREATED);
+    public ResponseEntity<String> addNewPayment(@RequestBody StripePaymentRequest request) {
+        return new ResponseEntity<>(stripeService.getDtoFromSession(request).getUrl(),
+                HttpStatus.CREATED);
     }
 
     @PatchMapping(value = "/update/{id}", produces = "application/json", consumes = "application/json")
@@ -101,11 +108,8 @@ public class PaymentController {
                     content = @Content(schema = @Schema(implementation = PaymentDto.class),
                             mediaType = "application/json")))
     public ResponseEntity<PaymentDto> updatePaymentInfo(
-            @PathVariable
-            Long id,
-            @RequestBody
-            @Parameter(name = "update payment info request", required = true)
-            PaymentUpdateRequest request
+            @PathVariable Long id,
+            @RequestBody PaymentUpdateRequest request
     ) {
         return new ResponseEntity<>(paymentService.updatePayment(id, request), HttpStatus.OK);
     }
@@ -113,10 +117,8 @@ public class PaymentController {
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "delete payment", description = "deletes payment",
             responses = @ApiResponse(responseCode = "204", description = "No Content"))
-    public ResponseEntity<Void> deletePayment(
-            @PathVariable Long id
-    ) {
-        service.deletePayment(id);
+    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
+        paymentService.deletePayment(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
