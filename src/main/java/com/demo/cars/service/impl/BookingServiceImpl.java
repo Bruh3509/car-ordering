@@ -55,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getAllUserRides(long userId) {
         return mapper.entityToDto(
-                repository.findByUserId(userId)
+                repository.findByUserId(userId) // rename + var
         );
     }
 

@@ -49,6 +49,14 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public PaymentDto getActivePayment(Long userId) {
+        return getPaymentsByUserId(userId).stream()
+                .filter(payment -> Status.PENDING.name().equals(payment.getStatus()))
+                .findFirst()
+                .orElseThrow(PaymentNotFoundException::new);
+    }
+
+    @Override
     public long confirmSuccess(String sessionId) {
         var payment = repository.findBySessionId(sessionId)
                 .orElseThrow(PaymentNotFoundException::new);

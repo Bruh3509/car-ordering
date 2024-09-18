@@ -1,6 +1,8 @@
 package com.demo.cars.controller;
 
 import com.demo.cars.dto.PaymentDto;
+import com.demo.cars.kafka.KafkaProducer;
+import com.demo.cars.mapper.KafkaMessageBuilder;
 import com.demo.cars.model.ErrorResponse;
 import com.demo.cars.model.payment.PaymentUpdateRequest;
 import com.demo.cars.model.payment.StripePaymentRequest;
@@ -48,6 +50,8 @@ public class PaymentController {
     PaymentService paymentService;
     BookingService bookingService;
     StripeService stripeService;
+    KafkaMessageBuilder builder;
+    KafkaProducer kafkaProducer;
 
     @GetMapping(value = "/user-id/{id}", produces = "application/json")
     @Operation(summary = "get user payments", description = "lists all user's payments",
@@ -83,6 +87,8 @@ public class PaymentController {
     @GetMapping(value = "/success")
     public ResponseEntity<String> paymentSuccess(@RequestParam("session_id") String sessionId) {
         var userId = paymentService.confirmSuccess(sessionId);
+        var payment = paymentService.getActivePayment(userId);
+        kafkaProducer.sendPaymentUpdate(builder.buildKafkaMessage(payment));
         bookingService.updateRidesStatus(userId);
         return new ResponseEntity<>("Payment succeeded.\n", HttpStatus.OK);
     }
@@ -98,7 +104,9 @@ public class PaymentController {
                     content = @Content(schema = @Schema(implementation = PaymentDto.class),
                             mediaType = "application/json")))
     public ResponseEntity<String> addNewPayment(@RequestBody StripePaymentRequest request) {
-        return new ResponseEntity<>(stripeService.getDtoFromSession(request).getUrl(),
+        var dto = stripeService.getDtoFromSession(request);
+        kafkaProducer.sendPaymentCreate(builder.buildKafkaMessage(dto));
+        return new ResponseEntity<>(dto.getUrl(),
                 HttpStatus.CREATED);
     }
 

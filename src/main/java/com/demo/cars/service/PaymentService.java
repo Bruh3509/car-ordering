@@ -13,6 +13,8 @@ public interface PaymentService {
 
     List<PaymentDto> getPaymentsByUserId(Long userId);
 
+    PaymentDto getActivePayment(Long userId);
+
     PaymentDto getPaymentById(Long id);
 
     long confirmSuccess(String sessionId);
