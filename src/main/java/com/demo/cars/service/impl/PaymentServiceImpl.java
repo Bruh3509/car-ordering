@@ -57,7 +57,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public long confirmSuccess(String sessionId) {
+    public PaymentDto confirmSuccess(String sessionId) {
         var payment = repository.findBySessionId(sessionId)
                 .orElseThrow(PaymentNotFoundException::new);
 
@@ -67,7 +67,9 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentDate(Timestamp.from(Instant.now()));
         payment.setStatus(Status.COMPLETE.name());
 
-        return repository.save(payment).getUser().getId();
+        return mapper.entityToDto(
+                repository.save(payment)
+        );
     }
 
     @Override

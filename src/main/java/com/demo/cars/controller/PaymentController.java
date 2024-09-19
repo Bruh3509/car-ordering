@@ -86,10 +86,9 @@ public class PaymentController {
 
     @GetMapping(value = "/success")
     public ResponseEntity<String> paymentSuccess(@RequestParam("session_id") String sessionId) {
-        var userId = paymentService.confirmSuccess(sessionId);
-        var payment = paymentService.getActivePayment(userId);
+        var payment = paymentService.confirmSuccess(sessionId);
         kafkaProducer.sendPaymentUpdate(builder.buildKafkaMessage(payment));
-        bookingService.updateRidesStatus(userId);
+        bookingService.updateRidesStatus(payment.getUserId());
         return new ResponseEntity<>("Payment succeeded.\n", HttpStatus.OK);
     }
 
