@@ -1,0 +1,2 @@
+ALTER TABLE users RENAME _user;
+ALTER TABLE _user MODIFY id BIGINT;

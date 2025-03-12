@@ -1,0 +1,5 @@
+CREATE TABLE places (
+    id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    location POINT NOT NULL,
+    SPATIAL INDEX(location)
+);
