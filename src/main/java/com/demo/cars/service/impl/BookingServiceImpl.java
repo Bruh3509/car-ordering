@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getAllUserRides(long userId) {
         return mapper.entityToDto(
-                repository.findByUserId(userId)
+                repository.findByUserId(userId) // rename + var
         );
     }
 
